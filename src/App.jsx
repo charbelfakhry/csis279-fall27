@@ -6,6 +6,7 @@ import './App.css'
 import Header from './components/Header'
 import Product from './components/Product'
 import Footer from './components/Footer'
+import UserForm from './components/UserForm'
 
 function App() {
   
@@ -14,7 +15,11 @@ function App() {
   return (
     <>
       <Header />
+      <hr />
       <Product />
+      <hr />
+      <UserForm />
+      <hr />
       <Footer />
     </>
   )
