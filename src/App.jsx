@@ -3,8 +3,9 @@ import heroImg from './assets/hero.png'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import './App.css'
-import Header from './Header'
-import Product from './Product'
+import Header from './components/Header'
+import Product from './components/Product'
+import Footer from './components/Footer'
 
 function App() {
   
@@ -14,9 +15,7 @@ function App() {
     <>
       <Header />
       <Product />
-      <Product />
-      <Product />
-      <Product />
+      <Footer />
     </>
   )
 }
