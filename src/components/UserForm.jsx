@@ -8,27 +8,27 @@ const UserForm = () => {
         age: 39
     });
 
-    const updateFirstName = (fn) => {
+    const updateFirstName = (event) => {
         setPerson({
             // spread object
             ...person,
 
-            firstName: fn
+            firstName: event.target.value
         }
         )
     } 
 
-    const updateLastName = (ln) =>{
+    const updateLastName = (event) =>{
         setPerson({
             ...person,
-            lastName: "test ln"
+            lastName: event.target.value
         })
     }
 
-    const upadateAge = (a) => {
+    const upadateAge = (event) => {
         setPerson({
             ...person,
-            age: a
+            age: event.target.value
         });
     }
 
@@ -38,9 +38,24 @@ const UserForm = () => {
         <>
             <h2>User Form</h2>
             <p>Welcome {person.firstName}, {person.lastName}, {person.age}</p>
-            <button className="btn btn-success" onClick={()=>updateFirstName("test")}>Update FN LN</button>
-            <button className="btn btn-danger" onClick={()=> updateLastName("ln test")}>Update Last Name</button>
-            <button className="btn btn-sm btn-secondary" onClick={()=> upadateAge(44)}>Update Age</button>
+            <input 
+            type="text" 
+            placeholder="Update First Name" 
+            className="form-control" 
+            onChange={updateFirstName}
+            />
+
+            <input
+            type="text"
+            className="form-control"
+            placeholder="Update Last Name"
+            onChange={updateLastName} />
+
+            <input
+            type="number"
+            placeholder="Update Age"
+            onChange={upadateAge}
+            />
         </>
     )
 }
