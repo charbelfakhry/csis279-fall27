@@ -7,20 +7,39 @@ import Header from './components/Header'
 import Product from './components/Product'
 import Footer from './components/Footer'
 import UserForm from './components/UserForm'
+import Student from './components/Student'
+import UsersTable from './components/UsersTable'
 
 function App() {
+
+  const students = [
+    {
+      name: "studnet 1",
+      age: 24,
+      major: "CS"
+    },
+    {
+      name: "studnet 1",
+      age: 24,
+      major: "CS"
+    },
+    {
+      name: "studnet 1",
+      age: 24,
+      major: "CS"
+    },
+    {
+      name: "studnet 1",
+      age: 24,
+      major: "CS"
+    },
+  ]
   
   
 
   return (
     <>
-      <Header />
-      <hr />
-      <Product />
-      <hr />
-      <UserForm />
-      <hr />
-      <Footer />
+      <UsersTable />
     </>
   )
 }
