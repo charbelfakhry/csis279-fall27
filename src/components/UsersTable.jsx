@@ -10,7 +10,7 @@ const UsersTable = () => {
 
     const fillDummyUsers = () => {
         let arr = [];
-        for(let i = 0; i < 100; i++)
+        for(let i = 0; i < 10; i++)
         {
             arr.push({
                 id: i,
