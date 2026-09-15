@@ -4,9 +4,22 @@ const UsersTable = () => {
 
     const [users, setUsers] = useState([]);
 
+    /*
+        Use Effect lets us execute code when something
+        happens in the lifecycle of the a component.
+        Typical use:
+        - fetching data from api
+        - running code when component firs loads
+        - reacting to a state/props change
+        - setting up/cleaning up timers and subscription.
+    */
     useEffect(()=>{
         fillDummyUsers()
     }, []);
+
+    useEffect(()=>{
+        
+    })
 
     const fillDummyUsers = () => {
         let arr = [];
