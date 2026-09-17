@@ -21,11 +21,11 @@ const getUserById = async(req, res) =>{
 
 const createUser = async (req, res) =>{
     const user = req.body;
-    const errors = validateUser(user);
+    /*const errors = validateUser(user);
 
     if(errors.length > 0){
         res.status(400).error(errors)
-    }
+    }*/
 
     const result = await userService.createUser(user);
 
@@ -35,11 +35,11 @@ const createUser = async (req, res) =>{
 
 const updateUser = async (req, res) =>{
     const user = req.body;
-    const errors = validateUser(user);
+    /*const errors = validateUser(user);
 
     if(errors.length > 0){
         res.status(400).error(errors)
-    }
+    }*/
 
     const result = await userService.updateUser(user);
 

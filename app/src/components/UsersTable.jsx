@@ -1,71 +1,45 @@
-import { useEffect, useState } from "react";
 
-const UsersTable = () => {
-
-    const [users, setUsers] = useState([]);
-
-    /*
-        Use Effect lets us execute code when something
-        happens in the lifecycle of the a component.
-        Typical use:
-        - fetching data from api
-        - running code when component firs loads
-        - reacting to a state/props change
-        - setting up/cleaning up timers and subscription.
-    */
-    useEffect(()=>{
-        fillDummyUsers()
-    }, []);
-
-    useEffect(()=>{
-        
-    })
-
-    const fillDummyUsers = () => {
-        let arr = [];
-        for(let i = 0; i < 10; i++)
-        {
-            arr.push({
-                id: i,
-                firstName: `FN ${i}`,
-                lastName: `LN ${i}`,
-                age: 15 + i
-            })
-        }
-
-        setUsers(arr);
+const UsersTable = (users, onEdit, onDelete) => {
+    if (users.length === 0) {
+        return (<p>No Users found</p>)
     }
 
-    return(
+    return (
         <>
-            <button className="btn btn-primary">Add</button>
-            <table className="table">
+            <table border="1">
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>First Name</th>
                         <th>Last Name</th>
+                        <th>Email</th>
                         <th>Age</th>
-                        <th>Update</th>
-                        <th>Del.</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {
-                        users.map((user)=>{
-                            return(
-                                <tr key={user.id}>
-                                    <td>{user.firstName}</td>
-                                    <td>{user.lastName}</td>
-                                    <td>{user.age}</td>
-                                    <td>
-                                        <button className="btn btn-secondary">Update</button>
-                                    </td>
-                                    <td>
-                                        <button className="btn btn-danger">Del.</button>
-                                    </td>
-                                </tr>
-                            )
-                        })
+                        users.map((user) => (
+                            <tr key={user.id}>
+                                <td>{user.id}</td>
+                                <td>{user.first_name}</td>
+                                <td>{user.last_name}</td>
+                                <td>{user.email}</td>
+                                <td>{user.age}</td>
+                                <td>
+                                    <button
+                                        onClick={onEdit(user)}
+                                    >Edit
+                                    </button>
+                                    <button
+                                        onClick={onDelete(user.id)}
+                                    >
+                                        Del.
+                                    </button>
+                                </td>
+                            </tr>
+                        )
+                        )
                     }
                 </tbody>
             </table>
