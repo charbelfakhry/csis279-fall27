@@ -43,6 +43,7 @@ const UserForm = (selectedUser, onSave, onCancel) => {
             ...form,
             age: form.age === "" ? null : Number(form.age)
         }
+        
         onSave(user);
     }
     return (

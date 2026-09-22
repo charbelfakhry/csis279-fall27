@@ -23,6 +23,7 @@ const handleResponse = async (response) =>{
 }
 
 export const getUsers = async () =>{
+    // fetch built-in js method to fetch apis.
     const response = await fetch(API_URL);
     return handleResponse(response);
 }
