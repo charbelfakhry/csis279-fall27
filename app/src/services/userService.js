@@ -11,6 +11,10 @@ const handleResponse = async (response) =>{
             }
         }
 
+        if (Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+            throw new Error(errorData.errors.join(", "));
+        }
+
         throw new Error(errorData.message || "Request failed")
     }
 
@@ -29,7 +33,7 @@ export const getUsers = async () =>{
 }
 
 export const getUserById = async(id) => {
-    const response = await fetch(`API_URL/${id}`);
+    const response = await fetch(`${API_URL}/${id}`);
     return handleResponse(response);
 }
 
@@ -39,13 +43,13 @@ export const createUser = async(user) => {
         headers:{
             "Content-Type": "application/json"
         },
-        body:JSON.stringfy(user)
+        body: JSON.stringify(user)
     });
     return handleResponse(response);
 }
 
 export const updateUser = async(id, user) =>{
-    const response = await fetch(`API_URL/${id}`, {
+    const response = await fetch(`${API_URL}/${id}`, {
         method: "PUT",
         headers:{
             "Content-Type": "application/json"
@@ -56,7 +60,7 @@ export const updateUser = async(id, user) =>{
 }
 
 export const deleteUser = async (id) =>{
-    const response = await fetch(`API_URL/${id}`,{
+    const response = await fetch(`${API_URL}/${id}`,{
         method: "DELETE"
     });
 

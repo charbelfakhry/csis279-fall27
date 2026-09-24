@@ -1,5 +1,5 @@
 
-const UsersTable = (users, onEdit, onDelete) => {
+const UsersTable = ({ users, onEdit, onDelete }) => {
     if (users.length === 0) {
         return (<p>No Users found</p>)
     }
@@ -22,17 +22,17 @@ const UsersTable = (users, onEdit, onDelete) => {
                         users.map((user) => (
                             <tr key={user.id}>
                                 <td>{user.id}</td>
-                                <td>{user.first_name}</td>
-                                <td>{user.last_name}</td>
+                                <td>{user.firstName}</td>
+                                <td>{user.lastName}</td>
                                 <td>{user.email}</td>
                                 <td>{user.age}</td>
                                 <td>
                                     <button
-                                        onClick={onEdit(user)}
+                                        onClick={() => onEdit(user)}
                                     >Edit
                                     </button>
                                     <button
-                                        onClick={onDelete(user.id)}
+                                        onClick={() => onDelete(user.id)}
                                     >
                                         Del.
                                     </button>

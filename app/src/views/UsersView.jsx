@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import UserForm from "../components/UserForm";
 import UsersTable from "../components/UsersTable";
 import {
     getUsers,
-    getUserById,
     createUser,
     updateUser,
     deleteUser
@@ -14,14 +13,10 @@ const UserViews = () => {
 
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    useEffect(() => {
-        loadUsers();
-    }, [])
-
-    const loadUsers = async () => {
+    const loadUsers = useCallback(async () => {
         try {
             setLoading(true);
             setError("");
@@ -32,7 +27,35 @@ const UserViews = () => {
         } finally {
             setLoading(false);
         }
-    }
+    }, []);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        const loadInitialUsers = async () => {
+            try {
+                const data = await getUsers();
+                if (!cancelled) {
+                    setUsers(data);
+                    setError("");
+                }
+            } catch (error) {
+                if (!cancelled) {
+                    setError(error.message);
+                }
+            } finally {
+                if (!cancelled) {
+                    setLoading(false);
+                }
+            }
+        }
+
+        loadInitialUsers();
+
+        return () => {
+            cancelled = true;
+        }
+    }, [])
 
     const handleSave = async (user) => {
         try {
@@ -47,7 +70,8 @@ const UserViews = () => {
 
             await loadUsers();
         } catch (error) {
-            setError(error.message)
+            setError(error.message);
+            throw error;
         }
     }
 
@@ -91,6 +115,7 @@ const UserViews = () => {
             }
 
             <UserForm 
+                key={selectedUser?.id ?? "new"}
                 selectedUser={selectedUser}
                 onSave={handleSave}
                 onCancel={handleCancel}

@@ -21,12 +21,26 @@ const createUser = async (user) =>{
     return await userRepository.create(user);
 }
 
-const updateUser = async (user) =>{
-    return await userRepository.update(user);
+const updateUser = async (id, user) =>{
+    const updatedUser = await userRepository.update(id, user);
+    if(!updatedUser){
+        const error = new Error("User not found");
+        error.status = 404;
+        throw error;
+    }
+
+    return updatedUser;
 }
 
 const deleteUser = async(id) =>{
-    return await userRepository.remove(id)
+    const deletedUser = await userRepository.remove(id);
+    if(!deletedUser){
+        const error = new Error("User not found");
+        error.status = 404;
+        throw error;
+    }
+
+    return deletedUser;
 }
 
 module.exports = {
