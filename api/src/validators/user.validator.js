@@ -1,3 +1,5 @@
+const MAX_AGE = 150;
+
 const validateUser = (user = {}) =>{
     const errors = [];
     const firstName = typeof user.firstName === "string" ? user.firstName.trim() : "";
@@ -13,12 +15,14 @@ const validateUser = (user = {}) =>{
         errors.push("Last name is required");
     }
 
-    if(email && !email.includes("@")){
+    if(!email){
+        errors.push("Email is required");
+    }else if(!email.includes("@")){
         errors.push("Invalid email");
     }
 
-    if(user.age !== null && user.age !== undefined && user.age !== "" && (!Number.isFinite(age) || age < 0)){
-        errors.push("Age must be a non-negative number");
+    if(user.age !== null && user.age !== undefined && user.age !== "" && (!Number.isInteger(age) || age < 0 || age > MAX_AGE)){
+        errors.push(`Age must be a whole number between 0 and ${MAX_AGE}`);
     }
 
     return errors;

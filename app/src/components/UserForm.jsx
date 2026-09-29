@@ -81,6 +81,7 @@ const UserForm = ({ selectedUser, onSave, onCancel }) => {
                         name="email"
                         onChange={handleChange}
                         value={form.email}
+                        required
                     />
                 </div>
                 <br />
@@ -90,6 +91,9 @@ const UserForm = ({ selectedUser, onSave, onCancel }) => {
                     <input
                         type="number"
                         name="age"
+                        min="0"
+                        max="150"
+                        step="1"
                         value={form.age}
                         onChange={handleChange}
                     />

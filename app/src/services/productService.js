@@ -1,41 +1,40 @@
 import handleResponse from "./handleResponse";
 
-const API_URL = "http://localhost:3000/api/users";
+const API_URL = "http://localhost:3000/api/products";
 
-export const getUsers = async () =>{
-    // fetch built-in js method to fetch apis.
+export const getProducts = async () =>{
     const response = await fetch(API_URL);
     return handleResponse(response);
 }
 
-export const getUserById = async(id) => {
+export const getProductById = async(id) => {
     const response = await fetch(`${API_URL}/${id}`);
     return handleResponse(response);
 }
 
-export const createUser = async(user) => {
+export const createProduct = async(product) => {
     const response = await fetch(API_URL,{
         method: "POST",
         headers:{
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(user)
+        body: JSON.stringify(product)
     });
     return handleResponse(response);
 }
 
-export const updateUser = async(id, user) =>{
+export const updateProduct = async(id, product) =>{
     const response = await fetch(`${API_URL}/${id}`, {
         method: "PUT",
         headers:{
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(user)
+        body: JSON.stringify(product)
     });
     return handleResponse(response);
 }
 
-export const deleteUser = async (id) =>{
+export const deleteProduct = async (id) =>{
     const response = await fetch(`${API_URL}/${id}`,{
         method: "DELETE"
     });
