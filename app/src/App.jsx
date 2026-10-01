@@ -4,8 +4,10 @@ import AppNavbar from "./components/AppNavbar";
 import UserViews from "./views/UsersView";
 import ProductsView from "./views/ProductsView";
 import ProductFormView from "./views/ProductFormView";
+import CategoriesView from "./views/CategoriesView";
+import CategoryFormView from "./views/CategoryFormView";
 import NotFoundView from "./views/NotFoundView";
-import ContactUs from "./views/ContuctUs";
+import ContactUs from "./views/ContactUs";
 
 function App() {
   return (
@@ -18,7 +20,10 @@ function App() {
           <Route path="/products" element={<ProductsView />} />
           <Route path="/products/new" element={<ProductFormView />} />
           <Route path="/products/:id/edit" element={<ProductFormView />} />
-          <Route path="/contactus" element={ContactUs} />
+          <Route path="/categories" element={<CategoriesView />} />
+          <Route path="/categories/new" element={<CategoryFormView />} />
+          <Route path="/categories/:id/edit" element={<CategoryFormView />} />
+          <Route path="/contactus" element={<ContactUs />} />
           <Route path="*" element={<NotFoundView />} />
         </Routes>
       </Container>
