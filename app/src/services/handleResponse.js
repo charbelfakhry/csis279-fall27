@@ -5,7 +5,7 @@ const handleResponse = async (response) =>{
             errorData = await response.json();
         }catch{
             errorData = {
-                errorData: "Request failed"
+                message: "Request failed"
             }
         }
 

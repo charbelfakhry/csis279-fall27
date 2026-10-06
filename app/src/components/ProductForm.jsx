@@ -85,12 +85,12 @@ const ProductForm = ({ selectedProduct, onSave, onCancel }) => {
             </div>
             <br />
 
-            <button type="submit">
+            <button type="submit" className="btn btn-sm btn-primary w-50">
                 {
                     selectedProduct ? "Update Product" : "Create Product"
                 }
             </button>
-            <button onClick={onCancel} type="button">
+            <button onClick={onCancel} type="button" className="btn btn-sm btn-secondary w-50">
                 Cancel
             </button>
         </form>

@@ -1,6 +1,6 @@
 import handleResponse from "./handleResponse";
 
-const API_URL = "http://localhost:3000/api/products";
+const API_URL = `${import.meta.env.VITE_API_URL}/products`;
 
 export const getProducts = async () =>{
     const response = await fetch(API_URL);

@@ -77,7 +77,7 @@ const ProductsView = () => {
                 )
             }
 
-            <button onClick={() => navigate("/products/new")}>
+            <button className="btn btn-sm btn-primary" onClick={() => navigate("/products/new")}>
                 Add Product
             </button>
 

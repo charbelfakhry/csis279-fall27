@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 const ProductsTable = ({ products, onDelete }) => {
     const navigate = useNavigate();
 
+    // conditional rendering
     if (products.length === 0) {
         return (<p>No Products found</p>)
     }
 
     return (
-        <table border="1">
+        <table border="1" className="table">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -29,12 +30,12 @@ const ProductsTable = ({ products, onDelete }) => {
                             <td>{product.price.toFixed(2)}</td>
                             <td>{product.quantity}</td>
                             <td>
-                                <button
+                                <button className="btn btn-sm btn-secondary w-50"
                                     onClick={() => navigate(`/products/${product.id}/edit`)}
                                 >
                                     Edit
                                 </button>
-                                <button
+                                <button className="btn btn-sm btn-danger w-50"
                                     onClick={() => onDelete(product.id)}
                                 >
                                     Del.
