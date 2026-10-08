@@ -12,6 +12,7 @@ const toProduct = (body) => ({
     name: body.name.trim(),
     description: body.description?.trim() || null,
     price: Number(body.price),
+    categoryId: body.categoryId,
     quantity: body.quantity === null || body.quantity === undefined || body.quantity === "" ? 0 : Number(body.quantity)
 });
 

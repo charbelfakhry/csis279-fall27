@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { Alert, Button, Card, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import CategoriesTable from "../components/CategoriesTable";
 import { getCategories, deleteCategory } from "../services/categoryService";
@@ -70,26 +71,37 @@ const CategoriesView = () => {
 
     return (
         <>
-            <h1>Category Management</h1>
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <h1 className="h3 mb-0">Category Management</h1>
+                <Button onClick={() => navigate("/categories/new")}>
+                    + Add Category
+                </Button>
+            </div>
+
             {
                 error && (
-                    <p>Error : {error}</p>
+                    <Alert variant="danger" dismissible onClose={() => setError("")}>
+                        {error}
+                    </Alert>
                 )
             }
 
-            <button onClick={() => navigate("/categories/new")}>
-                Add Category
-            </button>
-
-            <h2>Categories</h2>
-            {
-                loading ? (<p>Loading categories...</p>) : (
-                    <CategoriesTable
-                        categories={categories}
-                        onDelete={handleDelete}
-                    />
-                )
-            }
+            <Card className="shadow-sm">
+                <Card.Header as="h2" className="h6 py-3 mb-0">Categories</Card.Header>
+                {
+                    loading ? (
+                        <div className="text-center py-5">
+                            <Spinner animation="border" size="sm" className="me-2" />
+                            Loading categories...
+                        </div>
+                    ) : (
+                        <CategoriesTable
+                            categories={categories}
+                            onDelete={handleDelete}
+                        />
+                    )
+                }
+            </Card>
         </>
     )
 }

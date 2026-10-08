@@ -1,39 +1,35 @@
 import { useEffect, useState } from "react";
 import { Alert, Card, Spinner } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
-import ProductForm from "../components/ProductForm";
+import UserForm from "../components/UserForm";
 import {
-    getProductById,
-    createProduct,
-    updateProduct
-} from "../services/productService";
-import { getCategories } from "../services/categoryService";
+    getUserById,
+    createUser,
+    updateUser
+} from "../services/userService";
 
-const ProductFormView = () => {
+const UserFormView = () => {
 
     const { id } = useParams();
     const navigate = useNavigate();
     const isEdit = Boolean(id);
 
-    const [product, setProduct] = useState(null);
-    const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(isEdit);
     const [error, setError] = useState("");
 
     useEffect(() => {
+        if (!isEdit) {
+            return;
+        }
+
         let cancelled = false;
 
-        const loadData = async () => {
+        const loadUser = async () => {
             try {
-                const [categoriesData, productData] = await Promise.all([
-                    getCategories(),
-                    isEdit ? getProductById(id) : null
-                ]);
-
-                
+                const data = await getUserById(id);
                 if (!cancelled) {
-                    setCategories(categoriesData);
-                    setProduct(productData);
+                    setUser(data);
                     setError("");
                 }
             } catch (error) {
@@ -47,7 +43,7 @@ const ProductFormView = () => {
             }
         }
 
-        loadData();
+        loadUser();
 
         return () => {
             cancelled = true;
@@ -58,24 +54,24 @@ const ProductFormView = () => {
         try {
             setError("");
             if (isEdit) {
-                await updateProduct(id, data);
+                await updateUser(id, data);
             } else {
-                await createProduct(data);
+                await createUser(data);
             }
 
-            navigate("/products");
+            navigate("/users");
         } catch (error) {
             setError(error.message);
         }
     }
 
     const handleCancel = () => {
-        navigate("/products");
+        navigate("/users");
     }
 
     return (
         <div className="mx-auto" style={{ maxWidth: "640px" }}>
-            <h1 className="h3 mb-4">{isEdit ? "Edit Product" : "Create Product"}</h1>
+            <h1 className="h3 mb-4">{isEdit ? "Edit User" : "Create User"}</h1>
             {
                 error && (
                     <Alert variant="danger" dismissible onClose={() => setError("")}>
@@ -90,14 +86,13 @@ const ProductFormView = () => {
                         loading ? (
                             <div className="text-center py-4">
                                 <Spinner animation="border" size="sm" className="me-2" />
-                                Loading product...
+                                Loading user...
                             </div>
                         ) : (
-                            (!isEdit || product) && (
-                                <ProductForm
-                                    key={product?.id ?? "new"}
-                                    selectedProduct={product}
-                                    categories={categories}
+                            (!isEdit || user) && (
+                                <UserForm
+                                    key={user?.id ?? "new"}
+                                    selectedUser={user}
                                     onSave={handleSave}
                                     onCancel={handleCancel}
                                 />
@@ -110,4 +105,4 @@ const ProductFormView = () => {
     )
 }
 
-export default ProductFormView;
+export default UserFormView;

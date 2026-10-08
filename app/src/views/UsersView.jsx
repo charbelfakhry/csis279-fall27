@@ -1,18 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
-import UserForm from "../components/UserForm";
+import { Alert, Button, Card, Spinner } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import UsersTable from "../components/UsersTable";
-import {
-    getUsers,
-    createUser,
-    updateUser,
-    deleteUser
-} from "../services/userService";
+import { getUsers, deleteUser } from "../services/userService";
 
+const UsersView = () => {
 
-const UserViews = () => {
-
+    const navigate = useNavigate();
     const [users, setUsers] = useState([]);
-    const [selectedUser, setSelectedUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -57,82 +52,58 @@ const UserViews = () => {
         }
     }, [])
 
-    const handleSave = async (user) => {
-        try {
-            setError("");
-            if (selectedUser) {
-                await updateUser(selectedUser.id, user)
-            } else {
-                await createUser(user);
-            }
+    const handleDelete = async (id) => {
+        const confirmed =
+            window.confirm("Are you sure you want to delete this user?");
 
-            setSelectedUser(null);
-
-            await loadUsers();
-        } catch (error) {
-            setError(error.message);
-            throw error;
-        }
-    }
-
-    const handleEdit = (user) =>{
-        if(user){
-            setSelectedUser(user);
-        }
-    }
-
-    const handleCancel = () =>{
-        setSelectedUser(null);
-    }
-
-    const handleDelete = async(id) =>{
-        const confirmed = 
-        window.confirm("Are you sure you want to delete this user?");
-
-        if(!confirmed){
+        if (!confirmed) {
             return;
         }
 
-        try{
+        try {
             setError("");
             await deleteUser(id);
-            setSelectedUser(null);
             await loadUsers();
-        }catch(error){
+        } catch (error) {
             setError(error.message);
         }
     }
 
-    
-
     return (
         <>
-            <h1>User Management</h1>
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <h1 className="h3 mb-0">User Management</h1>
+                <Button onClick={() => navigate("/users/new")}>
+                    + Add User
+                </Button>
+            </div>
+
             {
                 error && (
-                    <p>Error : {error}</p>
+                    <Alert variant="danger" dismissible onClose={() => setError("")}>
+                        {error}
+                    </Alert>
                 )
             }
 
-            <UserForm 
-                key={selectedUser?.id ?? "new"}
-                selectedUser={selectedUser}
-                onSave={handleSave}
-                onCancel={handleCancel}
-            />
-
-            <h2>Users</h2>
-            {
-                loading ? (<p>Loading users...</p>):(
-                    <UsersTable 
-                        users={users} 
-                        onEdit={handleEdit} 
-                        onDelete={handleDelete}
-                    />
-                )
-            }
+            <Card className="shadow-sm">
+                <Card.Header as="h2" className="h6 py-3 mb-0">Users</Card.Header>
+                {
+                    loading ? (
+                        <div className="text-center py-5">
+                            <Spinner animation="border" size="sm" className="me-2" />
+                            Loading users...
+                        </div>
+                    ) : (
+                        <UsersTable
+                            users={users}
+                            onDelete={handleDelete}
+                        />
+                    )
+                }
+            </Card>
         </>
     )
 }
 
-export default UserViews;
+export default UsersView;

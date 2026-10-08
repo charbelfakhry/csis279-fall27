@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Alert, Card, Spinner } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import CategoryForm from "../components/CategoryForm";
 import {
@@ -69,27 +70,38 @@ const CategoryFormView = () => {
     }
 
     return (
-        <>
-            <h1>{isEdit ? "Edit Category" : "Create Category"}</h1>
+        <div className="mx-auto" style={{ maxWidth: "640px" }}>
+            <h1 className="h3 mb-4">{isEdit ? "Edit Category" : "Create Category"}</h1>
             {
                 error && (
-                    <p>Error : {error}</p>
+                    <Alert variant="danger" dismissible onClose={() => setError("")}>
+                        {error}
+                    </Alert>
                 )
             }
 
-            {
-                loading ? (<p>Loading category...</p>) : (
-                    (!isEdit || category) && (
-                        <CategoryForm
-                            key={category?.id ?? "new"}
-                            selectedCategory={category}
-                            onSave={handleSave}
-                            onCancel={handleCancel}
-                        />
-                    )
-                )
-            }
-        </>
+            <Card className="shadow-sm">
+                <Card.Body className="p-4">
+                    {
+                        loading ? (
+                            <div className="text-center py-4">
+                                <Spinner animation="border" size="sm" className="me-2" />
+                                Loading category...
+                            </div>
+                        ) : (
+                            (!isEdit || category) && (
+                                <CategoryForm
+                                    key={category?.id ?? "new"}
+                                    selectedCategory={category}
+                                    onSave={handleSave}
+                                    onCancel={handleCancel}
+                                />
+                            )
+                        )
+                    }
+                </Card.Body>
+            </Card>
+        </div>
     )
 }
 

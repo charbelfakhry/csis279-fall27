@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Button, Col, Form, Row } from "react-bootstrap";
 
 const getEmptyForm = () => ({
     firstName: "",
@@ -41,78 +42,65 @@ const UserForm = ({ selectedUser, onSave, onCancel }) => {
         }
         
         await onSave(user);
-        if (!selectedUser) {
-            setForm(getEmptyForm());
-        }
     }
     return (
-        <>
-            <h2>{selectedUser ? "Edit User" : "Create User"}</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>First Name: </label>
-                    <br />
-                    <input
+        <Form onSubmit={handleSubmit}>
+            <Row className="g-3 mb-3">
+                <Form.Group as={Col} sm={6} controlId="firstName">
+                    <Form.Label>First Name</Form.Label>
+                    <Form.Control
                         type="text"
                         name="firstName"
                         value={form.firstName}
                         onChange={handleChange}
                         required
                     />
-                </div>
-                <br />
-                <div>
-                    <label>Last Name</label>
-                    <br />
-                    <input
-                        name="lastName"
+                </Form.Group>
+                <Form.Group as={Col} sm={6} controlId="lastName">
+                    <Form.Label>Last Name</Form.Label>
+                    <Form.Control
                         type="text"
-                        onChange={handleChange}
+                        name="lastName"
                         value={form.lastName}
+                        onChange={handleChange}
                         required
                     />
-                </div>
-                <br />
-                <div>
-                    <label>Email</label>
-                    <br />
-                    <input
-                        type="email"
-                        name="email"
-                        onChange={handleChange}
-                        value={form.email}
-                        required
-                    />
-                </div>
-                <br />
-                <div>
-                    <label>Age</label>
-                    <br />
-                    <input
-                        type="number"
-                        name="age"
-                        min="0"
-                        max="150"
-                        step="1"
-                        value={form.age}
-                        onChange={handleChange}
-                    />
-                </div>
-                <br />
+                </Form.Group>
+            </Row>
+            <Form.Group className="mb-3" controlId="email">
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    required
+                />
+            </Form.Group>
+            <Form.Group controlId="age">
+                <Form.Label>Age</Form.Label>
+                <Form.Control
+                    type="number"
+                    name="age"
+                    min="0"
+                    max="150"
+                    step="1"
+                    value={form.age}
+                    onChange={handleChange}
+                />
+            </Form.Group>
 
-                <button type="submit">
+            <div className="d-flex justify-content-end gap-2 mt-4">
+                <Button variant="outline-secondary" onClick={onCancel} type="button">
+                    Cancel
+                </Button>
+                <Button variant="primary" type="submit">
                     {
                         selectedUser ? "Update User" : "Create User"
                     }
-                </button>
-                {
-                    selectedUser &&
-                    <button onClick={onCancel} type="button">
-                        Cancel
-                    </button>
-                }
-            </form>
-        </>
+                </Button>
+            </div>
+        </Form>
     )
 }
 

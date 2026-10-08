@@ -23,6 +23,10 @@ const validateProduct = (product = {}) =>{
         errors.push(`Quantity must be a whole number between 0 and ${MAX_QUANTITY}`);
     }
 
+    if(product.categoryId !== null && product.categoryId !== undefined && product.categoryId !== "" && (!Number.isInteger(Number(product.categoryId)) || Number(product.categoryId) <= 0)){
+        errors.push("Category must be a valid category id");
+    }
+
     return errors;
 }
 

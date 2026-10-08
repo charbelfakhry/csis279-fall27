@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Button, Form } from "react-bootstrap";
 
 const getFormFromCategory = (category) => ({
     name: category?.name ?? "",
@@ -25,11 +26,10 @@ const CategoryForm = ({ selectedCategory, onSave, onCancel }) => {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label>Name</label>
-                <br />
-                <input
+        <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3" controlId="name">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
                     type="text"
                     name="name"
                     maxLength="100"
@@ -37,40 +37,37 @@ const CategoryForm = ({ selectedCategory, onSave, onCancel }) => {
                     onChange={handleChange}
                     required
                 />
-            </div>
-            <br />
-            <div>
-                <label>Description</label>
-                <br />
-                <textarea
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="description">
+                <Form.Label>Description</Form.Label>
+                <Form.Control
+                    as="textarea"
+                    rows={3}
                     name="description"
                     value={form.description}
                     onChange={handleChange}
                 />
-            </div>
-            <br />
-            <div>
-                <label>
-                    <input
-                        type="checkbox"
-                        name="isActive"
-                        checked={form.isActive}
-                        onChange={handleChange}
-                    />
-                    {" "}Active
-                </label>
-            </div>
-            <br />
+            </Form.Group>
+            <Form.Check
+                type="switch"
+                id="isActive"
+                name="isActive"
+                label="Active"
+                checked={form.isActive}
+                onChange={handleChange}
+            />
 
-            <button type="submit">
-                {
-                    selectedCategory ? "Update Category" : "Create Category"
-                }
-            </button>
-            <button onClick={onCancel} type="button">
-                Cancel
-            </button>
-        </form>
+            <div className="d-flex justify-content-end gap-2 mt-4">
+                <Button variant="outline-secondary" onClick={onCancel} type="button">
+                    Cancel
+                </Button>
+                <Button variant="primary" type="submit">
+                    {
+                        selectedCategory ? "Update Category" : "Create Category"
+                    }
+                </Button>
+            </div>
+        </Form>
     )
 }
 

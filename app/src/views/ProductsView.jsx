@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { Alert, Button, Card, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import ProductsTable from "../components/ProductsTable";
 import { getProducts, deleteProduct } from "../services/productService";
@@ -70,26 +71,37 @@ const ProductsView = () => {
 
     return (
         <>
-            <h1>Product Management</h1>
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <h1 className="h3 mb-0">Product Management</h1>
+                <Button onClick={() => navigate("/products/new")}>
+                    + Add Product
+                </Button>
+            </div>
+
             {
                 error && (
-                    <p>Error : {error}</p>
+                    <Alert variant="danger" dismissible onClose={() => setError("")}>
+                        {error}
+                    </Alert>
                 )
             }
 
-            <button className="btn btn-sm btn-primary" onClick={() => navigate("/products/new")}>
-                Add Product
-            </button>
-
-            <h2>Products</h2>
-            {
-                loading ? (<p>Loading products...</p>) : (
-                    <ProductsTable
-                        products={products}
-                        onDelete={handleDelete}
-                    />
-                )
-            }
+            <Card className="shadow-sm">
+                <Card.Header as="h2" className="h6 py-3 mb-0">Products</Card.Header>
+                {
+                    loading ? (
+                        <div className="text-center py-5">
+                            <Spinner animation="border" size="sm" className="me-2" />
+                            Loading products...
+                        </div>
+                    ) : (
+                        <ProductsTable
+                            products={products}
+                            onDelete={handleDelete}
+                        />
+                    )
+                }
+            </Card>
         </>
     )
 }
