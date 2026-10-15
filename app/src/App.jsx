@@ -9,6 +9,8 @@ import CategoriesView from "./views/CategoriesView";
 import CategoryFormView from "./views/CategoryFormView";
 import NotFoundView from "./views/NotFoundView";
 import ContactUs from "./views/ContactUs";
+import SuppliersView from "./views/SuppliersView";
+import SupplierFormView from "./views/SupplierFormView";
 
 function App() {
   return (
@@ -23,6 +25,9 @@ function App() {
           <Route path="/products" element={<ProductsView />} />
           <Route path="/products/new" element={<ProductFormView />} />
           <Route path="/products/:id/edit" element={<ProductFormView />} />
+          <Route path="/suppliers" element={<SuppliersView />} />
+          <Route path="/suppliers/new" element={<SupplierFormView />} />
+          <Route path="/suppliers/:id/edit" element={<SupplierFormView />} />
           <Route path="/categories" element={<CategoriesView />} />
           <Route path="/categories/new" element={<CategoryFormView />} />
           <Route path="/categories/:id/edit" element={<CategoryFormView />} />

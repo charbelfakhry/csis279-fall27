@@ -12,6 +12,7 @@ const AppNavbar = () => {
                         <Nav.Link as={NavLink} to="/users">Users</Nav.Link>
                         <Nav.Link as={NavLink} to="/products">Products</Nav.Link>
                         <Nav.Link as={NavLink} to="/categories">Categories</Nav.Link>
+                        <Nav.Link as={NavLink} to="/suppliers">Suppliers</Nav.Link>
                         <Nav.Link as={NavLink} to="/contactus">Contact Us</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
