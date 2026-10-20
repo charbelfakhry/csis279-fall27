@@ -43,6 +43,30 @@ const create = async(user) =>{
     return result.rows[0];
 }
 
+const createWithPassword = async(user, passwordHash) =>{
+    const {firstName, lastName, email, age} = user;
+
+    const result = await pool.query(
+        `INSERT INTO users (first_name, last_name, email, age, password_hash)
+        VALUES($1, $2, $3, $4, $5)
+        RETURNING ${userColumns}`,
+        [firstName, lastName, email, age, passwordHash]);
+
+    return result.rows[0];
+}
+
+// the only query that returns the hash; never send its result to the client as-is
+const findByEmailWithPassword = async(email) =>{
+    const result = await pool.query(
+        `SELECT ${userColumns}, password_hash AS "passwordHash"
+        FROM users
+        WHERE lower(email) = lower($1)
+        `, [email]
+    );
+
+    return result.rows[0];
+}
+
 const update = async(id, user) =>{
     const {firstName, lastName, email, age} = user;
 
@@ -73,6 +97,8 @@ module.exports = {
     findAll,
     findById,
     create,
+    createWithPassword,
+    findByEmailWithPassword,
     update,
     remove
 }

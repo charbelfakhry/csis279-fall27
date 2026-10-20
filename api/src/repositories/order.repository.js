@@ -1,17 +1,18 @@
 const pool = require("../config/db");
 
 const orderColumns = `
-        order_id AS id,
-        product_id AS "productId",
-        quantity,
-        unit_price::float AS "unitPrice"
+        orders.order_id AS id,
+        orders.product_id AS "productId",
+        orders.quantity,
+        orders.unit_price::float AS "unitPrice"
 `;
 
 const findAll = async() =>{
     const result = await pool.query(
-        `SELECT ${orderColumns}
+        `SELECT ${orderColumns}, products.name AS "productName"
         FROM orders
-        ORDER BY order_id
+        JOIN products ON products.id = orders.product_id
+        ORDER BY orders.order_id
         `
     );
 
@@ -20,9 +21,10 @@ const findAll = async() =>{
 
 const findById = async(id) =>{
     const result = await pool.query(
-        `SELECT ${orderColumns}
+        `SELECT ${orderColumns}, products.name AS "productName"
         FROM orders
-        WHERE order_id = $1
+        JOIN products ON products.id = orders.product_id
+        WHERE orders.order_id = $1
         `, [id]
     );
 

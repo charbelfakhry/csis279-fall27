@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
-import Dropdown from "./Dropdown";
+import { Button, Col, Form, Row } from "react-bootstrap";
 
 const getFormFromSupplier = (supplier) => ({
     name: supplier?.name ?? "",
@@ -8,9 +7,9 @@ const getFormFromSupplier = (supplier) => ({
     phone: supplier?.phone ?? "",
 });
 
-const SupplierForm = ({ selectedSupllier, onSave, onCancel }) => {
+const SupplierForm = ({ selectedSupplier, onSave, onCancel }) => {
 
-    const [form, setForm] = useState(() => getFormFromSupplier(selectedSupllier));
+    const [form, setForm] = useState(() => getFormFromSupplier(selectedSupplier));
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -23,12 +22,7 @@ const SupplierForm = ({ selectedSupllier, onSave, onCancel }) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const supplier = {
-            ...form,
-            [name]: value
-        }
-
-        await onSave(supplier);
+        await onSave(form);
     }
 
     return (
@@ -43,17 +37,18 @@ const SupplierForm = ({ selectedSupllier, onSave, onCancel }) => {
                     required
                 />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="description">
+            <Form.Group className="mb-3" controlId="email">
                 <Form.Label>Email</Form.Label>
                 <Form.Control
                     type="email"
                     name="email"
                     value={form.email}
                     onChange={handleChange}
+                    required
                 />
             </Form.Group>
             <Row className="g-3 mb-3">
-                <Form.Group as={Col} sm={6} controlId="price">
+                <Form.Group as={Col} sm={6} controlId="phone">
                     <Form.Label>Phone</Form.Label>
                     <Form.Control
                         type="text"
@@ -61,7 +56,6 @@ const SupplierForm = ({ selectedSupllier, onSave, onCancel }) => {
                         value={form.phone}
                         onChange={handleChange}
                     />
-
                 </Form.Group>
             </Row>
 

@@ -1,20 +1,21 @@
+import apiFetch from "./apiFetch";
 import handleResponse from "./handleResponse";
 
 const API_URL = `${import.meta.env.VITE_API_URL}/users`;
 
 export const getUsers = async () =>{
     // fetch built-in js method to fetch apis.
-    const response = await fetch(API_URL);
+    const response = await apiFetch(API_URL);
     return handleResponse(response);
 }
 
 export const getUserById = async(id) => {
-    const response = await fetch(`${API_URL}/${id}`);
+    const response = await apiFetch(`${API_URL}/${id}`);
     return handleResponse(response);
 }
 
 export const createUser = async(user) => {
-    const response = await fetch(API_URL,{
+    const response = await apiFetch(API_URL,{
         method: "POST",
         headers:{
             "Content-Type": "application/json"
@@ -25,7 +26,7 @@ export const createUser = async(user) => {
 }
 
 export const updateUser = async(id, user) =>{
-    const response = await fetch(`${API_URL}/${id}`, {
+    const response = await apiFetch(`${API_URL}/${id}`, {
         method: "PUT",
         headers:{
             "Content-Type": "application/json"
@@ -36,7 +37,7 @@ export const updateUser = async(id, user) =>{
 }
 
 export const deleteUser = async (id) =>{
-    const response = await fetch(`${API_URL}/${id}`,{
+    const response = await apiFetch(`${API_URL}/${id}`,{
         method: "DELETE"
     });
 

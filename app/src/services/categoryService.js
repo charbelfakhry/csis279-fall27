@@ -1,19 +1,20 @@
+import apiFetch from "./apiFetch";
 import handleResponse from "./handleResponse";
 
 const API_URL = `${import.meta.env.VITE_API_URL}/categories`;
 
 export const getCategories = async () => {
-    const response = await fetch(API_URL);
+    const response = await apiFetch(API_URL);
     return handleResponse(response);
 }
 
 export const getCategoryById = async (id) => {
-    const response = await fetch(`${API_URL}/${id}`);
+    const response = await apiFetch(`${API_URL}/${id}`);
     return handleResponse(response);
 }
 
 export const createCategory = async (category) => {
-    const response = await fetch(API_URL, {
+    const response = await apiFetch(API_URL, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -24,7 +25,7 @@ export const createCategory = async (category) => {
 }
 
 export const updateCategory = async (id, category) => {
-    const response = await fetch(`${API_URL}/${id}`, {
+    const response = await apiFetch(`${API_URL}/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -35,7 +36,7 @@ export const updateCategory = async (id, category) => {
 }
 
 export const deleteCategory = async (id) => {
-    const response = await fetch(`${API_URL}/${id}`, {
+    const response = await apiFetch(`${API_URL}/${id}`, {
         method: "DELETE"
     });
     return handleResponse(response);

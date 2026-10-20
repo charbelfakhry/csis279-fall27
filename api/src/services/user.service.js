@@ -1,8 +1,21 @@
 const userRepository = require("../repositories/user.repository");
 
+const UNIQUE_VIOLATION = "23505";
+
 const notFound = () =>{
     const error = new Error("User not found");
     error.status = 404;
+    return error;
+}
+
+// users.email is unique (ignoring case), so a duplicate should be a 409 instead of a 500
+const toConflict = (error) =>{
+    if(error.code === UNIQUE_VIOLATION){
+        const conflict = new Error("A user with this email already exists");
+        conflict.status = 409;
+        return conflict;
+    }
+
     return error;
 }
 
@@ -31,7 +44,11 @@ const getUserById = async (id) =>{
 }
 
 const createUser = async (user) =>{
-    return await userRepository.create(user);
+    try{
+        return await userRepository.create(user);
+    }catch(error){
+        throw toConflict(error);
+    }
 }
 
 const updateUser = async (id, user) =>{
@@ -39,7 +56,13 @@ const updateUser = async (id, user) =>{
         throw notFound();
     }
 
-    const updatedUser = await userRepository.update(id, user);
+    let updatedUser;
+    try{
+        updatedUser = await userRepository.update(id, user);
+    }catch(error){
+        throw toConflict(error);
+    }
+
     if(!updatedUser){
         throw notFound();
     }

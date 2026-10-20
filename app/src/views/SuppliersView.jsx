@@ -13,11 +13,10 @@ const SuppliersView = () => {
 
     const loadSuppliers = useCallback(async () => {
         try {
-            
             setLoading(true);
             setError("");
             const data = await getSuppliers();
-            await setSuppliers(data);
+            setSuppliers(data);
         } catch (error) {
             setError(error.message);
         } finally {
@@ -30,7 +29,7 @@ const SuppliersView = () => {
 
         const loadInitialSuppliers = async () => {
             try {
-                const data = await getSuppliers;
+                const data = await getSuppliers();
                 if (!cancelled) {
                     setSuppliers(data);
                     setError("");
@@ -88,7 +87,7 @@ const SuppliersView = () => {
             }
 
             <Card className="shadow-sm">
-                <Card.Header as="h2" className="h6 py-3 mb-0">Products</Card.Header>
+                <Card.Header as="h2" className="h6 py-3 mb-0">Suppliers</Card.Header>
                 {
                     loading ? (
                         <div className="text-center py-5">

@@ -51,7 +51,19 @@ const deleteProduct = async(id) =>{
         throw notFound();
     }
 
-    const deletedProduct = await productRepository.remove(id);
+    let deletedProduct;
+    try{
+        deletedProduct = await productRepository.remove(id);
+    }catch(error){
+        // 23503 = foreign key violation: the product still has orders
+        if(error.code === "23503"){
+            const conflict = new Error("Product has orders and cannot be deleted");
+            conflict.status = 409;
+            throw conflict;
+        }
+        throw error;
+    }
+
     if(!deletedProduct){
         throw notFound();
     }

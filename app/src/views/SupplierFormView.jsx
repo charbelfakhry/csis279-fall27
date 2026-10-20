@@ -5,8 +5,7 @@ import SupplierForm from "../components/SupplierForm";
 import {
     getSupplierById,
     createSupplier,
-    updateSupplier,
-    getSuppliers
+    updateSupplier
 } from "../services/supplierService";
 
 const SupplierFormView = () => {
@@ -16,7 +15,7 @@ const SupplierFormView = () => {
     const isEdit = Boolean(id);
 
     const [supplier, setSupplier] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(isEdit);
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -24,7 +23,6 @@ const SupplierFormView = () => {
 
         const loadData = async () => {
             try {
-
                 const supplierData = await getSupplierById(id);
                 
                 if (!cancelled) {
@@ -83,7 +81,7 @@ const SupplierFormView = () => {
             <Card className="shadow-sm">
                 <Card.Body className="p-4">
                     {
-                        !loading ? (
+                        loading ? (
                             <div className="text-center py-4">
                                 <Spinner animation="border" size="sm" className="me-2" />
                                 Loading supplier...

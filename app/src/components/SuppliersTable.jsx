@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 
 const SuppliersTable = ({ suppliers, onDelete }) => {
     const navigate = useNavigate();
-    console.log(suppliers);
     // conditional rendering
     if (suppliers.length === 0) {
         return (<p className="text-center text-body-secondary py-5 mb-0">No suppliers found</p>)
@@ -17,24 +16,23 @@ const SuppliersTable = ({ suppliers, onDelete }) => {
                     <th>Name</th>
                     <th>Email</th>
                     <th className="text-end">Phone</th>
+                    <th className="text-end">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {
-                    suppliers ?? 
                     suppliers.map((supplier) => (
                         <tr key={supplier.id}>
                             <td className="text-body-secondary">{supplier.id}</td>
                             <td className="fw-medium">{supplier.name}</td>
                             <td className="text-body-secondary">{supplier.email}</td>
                             <td className="text-end">{supplier.phone}</td>
-                
                             <td className="text-end text-nowrap">
                                 <Button
                                     size="sm"
                                     variant="outline-primary"
                                     className="me-2"
-                                    onClick={() => navigate(`/supplier/${supplier.id}/edit`)}
+                                    onClick={() => navigate(`/suppliers/${supplier.id}/edit`)}
                                 >
                                     Edit
                                 </Button>
