@@ -1,56 +1,19 @@
-import { useCallback, useEffect, useState } from "react";
 import { Alert, Button, Card, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import useFetch from "../hooks/useFetch";
 import ProductsTable from "../components/ProductsTable";
 import { getProducts, deleteProduct } from "../services/productService";
 
 const ProductsView = () => {
 
     const navigate = useNavigate();
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
-
-    const loadProducts = useCallback(async () => {
-        try {
-            setLoading(true);
-            setError("");
-            const data = await getProducts();
-            setProducts(data);
-        } catch (error) {
-            setError(error.message);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        let cancelled = false;
-
-        const loadInitialProducts = async () => {
-            try {
-                const data = await getProducts();
-                if (!cancelled) {
-                    setProducts(data);
-                    setError("");
-                }
-            } catch (error) {
-                if (!cancelled) {
-                    setError(error.message);
-                }
-            } finally {
-                if (!cancelled) {
-                    setLoading(false);
-                }
-            }
-        }
-
-        loadInitialProducts();
-
-        return () => {
-            cancelled = true;
-        }
-    }, [])
+    const {
+        data: products,
+        loading,
+        error,
+        setError,
+        reload: loadProducts
+    } = useFetch(getProducts);
 
     const handleDelete = async (id) => {
         const confirmed =

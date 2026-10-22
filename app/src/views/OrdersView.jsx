@@ -1,56 +1,19 @@
-import { useCallback, useEffect, useState } from "react";
 import { Alert, Button, Card, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import useFetch from "../hooks/useFetch";
 import OrdersTable from "../components/OrdersTable";
 import { getOrders, deleteOrder } from "../services/orderService";
 
 const OrdersView = () => {
 
     const navigate = useNavigate();
-    const [orders, setOrders] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
-
-    const loadOrders = useCallback(async () => {
-        try {
-            setLoading(true);
-            setError("");
-            const data = await getOrders();
-            setOrders(data);
-        } catch (error) {
-            setError(error.message);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        let cancelled = false;
-
-        const loadInitialOrders = async () => {
-            try {
-                const data = await getOrders();
-                if (!cancelled) {
-                    setOrders(data);
-                    setError("");
-                }
-            } catch (error) {
-                if (!cancelled) {
-                    setError(error.message);
-                }
-            } finally {
-                if (!cancelled) {
-                    setLoading(false);
-                }
-            }
-        }
-
-        loadInitialOrders();
-
-        return () => {
-            cancelled = true;
-        }
-    }, [])
+    const {
+        data: orders,
+        loading,
+        error,
+        setError,
+        reload: loadOrders
+    } = useFetch(getOrders);
 
     const handleDelete = async (id) => {
         const confirmed =

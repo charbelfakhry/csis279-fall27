@@ -1,56 +1,19 @@
-import { useCallback, useEffect, useState } from "react";
 import { Alert, Button, Card, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import useFetch from "../hooks/useFetch";
 import SuppliersTable from "../components/SuppliersTable";
 import { getSuppliers, deleteSupplier } from "../services/supplierService";
 
 const SuppliersView = () => {
 
     const navigate = useNavigate();
-    const [suppliers, setSuppliers] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
-
-    const loadSuppliers = useCallback(async () => {
-        try {
-            setLoading(true);
-            setError("");
-            const data = await getSuppliers();
-            setSuppliers(data);
-        } catch (error) {
-            setError(error.message);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        let cancelled = false;
-
-        const loadInitialSuppliers = async () => {
-            try {
-                const data = await getSuppliers();
-                if (!cancelled) {
-                    setSuppliers(data);
-                    setError("");
-                }
-            } catch (error) {
-                if (!cancelled) {
-                    setError(error.message);
-                }
-            } finally {
-                if (!cancelled) {
-                    setLoading(false);
-                }
-            }
-        }
-
-        loadInitialSuppliers();
-
-        return () => {
-            cancelled = true;
-        }
-    }, [])
+    const {
+        data: suppliers,
+        loading,
+        error,
+        setError,
+        reload: loadSuppliers
+    } = useFetch(getSuppliers);
 
     const handleDelete = async (id) => {
         const confirmed =

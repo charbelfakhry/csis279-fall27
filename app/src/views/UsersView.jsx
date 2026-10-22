@@ -1,56 +1,19 @@
-import { useCallback, useEffect, useState } from "react";
 import { Alert, Button, Card, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import useFetch from "../hooks/useFetch";
 import UsersTable from "../components/UsersTable";
 import { getUsers, deleteUser } from "../services/userService";
 
 const UsersView = () => {
 
     const navigate = useNavigate();
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
-
-    const loadUsers = useCallback(async () => {
-        try {
-            setLoading(true);
-            setError("");
-            const data = await getUsers();
-            setUsers(data);
-        } catch (error) {
-            setError(error.message);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        let cancelled = false;
-
-        const loadInitialUsers = async () => {
-            try {
-                const data = await getUsers();
-                if (!cancelled) {
-                    setUsers(data);
-                    setError("");
-                }
-            } catch (error) {
-                if (!cancelled) {
-                    setError(error.message);
-                }
-            } finally {
-                if (!cancelled) {
-                    setLoading(false);
-                }
-            }
-        }
-
-        loadInitialUsers();
-
-        return () => {
-            cancelled = true;
-        }
-    }, [])
+    const {
+        data: users,
+        loading,
+        error,
+        setError,
+        reload: loadUsers
+    } = useFetch(getUsers);
 
     const handleDelete = async (id) => {
         const confirmed =
