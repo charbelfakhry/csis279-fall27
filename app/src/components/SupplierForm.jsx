@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
+import useForm from "../hooks/useForm";
 
 const getFormFromSupplier = (supplier) => ({
     name: supplier?.name ?? "",
@@ -9,16 +9,7 @@ const getFormFromSupplier = (supplier) => ({
 
 const SupplierForm = ({ selectedSupplier, onSave, onCancel }) => {
 
-    const [form, setForm] = useState(() => getFormFromSupplier(selectedSupplier));
-
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-
-        setForm({
-            ...form,
-            [name]: value
-        })
-    }
+    const { form, handleChange } = useForm(() => getFormFromSupplier(selectedSupplier));
 
     const handleSubmit = async (event) => {
         event.preventDefault();

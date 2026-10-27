@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback } from "react";
 import { Alert, Card, Spinner } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
+import useFetch from "../hooks/useFetch";
+import useAsyncAction from "../hooks/useAsyncAction";
 import OrderForm from "../components/OrderForm";
 import {
     getOrderById,
@@ -15,59 +17,32 @@ const OrderFormView = () => {
     const navigate = useNavigate();
     const isEdit = Boolean(id);
 
-    const [order, setOrder] = useState(null);
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    const fetchData = useCallback(async () => {
+        const [products, order] = await Promise.all([
+            getProducts(),
+            isEdit ? getOrderById(id) : null
+        ]);
 
-    useEffect(() => {
-        let cancelled = false;
+        return { products, order };
+    }, [id, isEdit]);
+    const {
+        data: { products, order },
+        loading,
+        error,
+        setError
+    } = useFetch(fetchData, { products: [], order: null });
 
-        const loadData = async () => {
-            try {
-                const [productsData, orderData] = await Promise.all([
-                    getProducts(),
-                    isEdit ? getOrderById(id) : null
-                ]);
+    const { run } = useAsyncAction(setError);
 
-                
-                if (!cancelled) {
-                    setProducts(productsData);
-                    setOrder(orderData);
-                    setError("");
-                }
-            } catch (error) {
-                if (!cancelled) {
-                    setError(error.message);
-                }
-            } finally {
-                if (!cancelled) {
-                    setLoading(false);
-                }
-            }
+    const handleSave = (data) => run(async () => {
+        if (isEdit) {
+            await updateOrder(id, data);
+        } else {
+            await createOrder(data);
         }
 
-        loadData();
-
-        return () => {
-            cancelled = true;
-        }
-    }, [id, isEdit])
-
-    const handleSave = async (data) => {
-        try {
-            setError("");
-            if (isEdit) {
-                await updateOrder(id, data);
-            } else {
-                await createOrder(data);
-            }
-
-            navigate("/orders");
-        } catch (error) {
-            setError(error.message);
-        }
-    }
+        navigate("/orders");
+    });
 
     const handleCancel = () => {
         navigate("/orders");

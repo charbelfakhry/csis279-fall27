@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
+import useForm from "../hooks/useForm";
 import Dropdown from "./Dropdown";
 
 const getFormFromOrder = (order) => ({
@@ -10,26 +10,17 @@ const getFormFromOrder = (order) => ({
 
 const OrderForm = ({ selectedOrder, products, onSave, onCancel }) => {
 
-    const [form, setForm] = useState(() => getFormFromOrder(selectedOrder));
-
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-
-        setForm({
-            ...form,
-            [name]: value
-        })
-    }
+    const { form, setForm, handleChange } = useForm(() => getFormFromOrder(selectedOrder));
 
     // pre-fill the unit price with the chosen product's current price
     const handleProductChange = (event) => {
         const product = products.find((p) => p.id === Number(event.target.value));
 
-        setForm({
-            ...form,
+        setForm((prev) => ({
+            ...prev,
             productId: event.target.value,
             unitPrice: product?.price ?? ""
-        })
+        }))
     }
 
     const handleSubmit = async (event) => {

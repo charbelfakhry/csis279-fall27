@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Alert, Button, Card, Col, Form, Row } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import useAuth from "../context/useAuth";
+import useForm from "../hooks/useForm";
+import useAsyncAction from "../hooks/useAsyncAction";
 
 const MIN_PASSWORD_LENGTH = 8;
 
@@ -10,24 +12,15 @@ const RegisterView = () => {
     const { register } = useAuth();
     const location = useLocation();
 
-    const [form, setForm] = useState({
+    const { form, handleChange } = useForm({
         firstName: "",
         lastName: "",
         email: "",
         password: "",
         confirmPassword: ""
     });
-    const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState("");
-
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-
-        setForm({
-            ...form,
-            [name]: value
-        })
-    }
+    const { run, pending: submitting } = useAsyncAction(setError);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -37,20 +30,13 @@ const RegisterView = () => {
             return;
         }
 
-        try {
-            setSubmitting(true);
-            setError("");
-            // GuestRoute redirects once the user is set
-            await register({
-                firstName: form.firstName,
-                lastName: form.lastName,
-                email: form.email,
-                password: form.password
-            });
-        } catch (error) {
-            setError(error.message);
-            setSubmitting(false);
-        }
+        // GuestRoute redirects once the user is set
+        await run(() => register({
+            firstName: form.firstName,
+            lastName: form.lastName,
+            email: form.email,
+            password: form.password
+        }));
     }
 
     return (

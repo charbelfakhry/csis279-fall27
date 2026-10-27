@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { Button, Form } from "react-bootstrap";
+import useForm from "../hooks/useForm";
 
 const getFormFromCategory = (category) => ({
     name: category?.name ?? "",
@@ -9,16 +9,7 @@ const getFormFromCategory = (category) => ({
 
 const CategoryForm = ({ selectedCategory, onSave, onCancel }) => {
 
-    const [form, setForm] = useState(() => getFormFromCategory(selectedCategory));
-
-    const handleChange = (event) => {
-        const { name, value, type, checked } = event.target;
-
-        setForm({
-            ...form,
-            [name]: type === "checkbox" ? checked : value
-        })
-    }
+    const { form, handleChange } = useForm(() => getFormFromCategory(selectedCategory));
 
     const handleSubmit = async (event) => {
         event.preventDefault();

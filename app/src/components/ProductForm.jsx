@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
+import useForm from "../hooks/useForm";
 import Dropdown from "./Dropdown";
 
 const getFormFromProduct = (product) => ({
@@ -12,16 +12,7 @@ const getFormFromProduct = (product) => ({
 
 const ProductForm = ({ selectedProduct, categories, onSave, onCancel }) => {
 
-    const [form, setForm] = useState(() => getFormFromProduct(selectedProduct));
-
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-
-        setForm({
-            ...form,
-            [name]: value
-        })
-    }
+    const { form, handleChange } = useForm(() => getFormFromProduct(selectedProduct));
 
     const handleSubmit = async (event) => {
         event.preventDefault();

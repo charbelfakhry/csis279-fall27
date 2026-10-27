@@ -1,6 +1,7 @@
 import { Alert, Button, Card, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
+import useAsyncAction from "../hooks/useAsyncAction";
 import CategoriesTable from "../components/CategoriesTable";
 import { getCategories, deleteCategory } from "../services/categoryService";
 
@@ -15,7 +16,9 @@ const CategoriesView = () => {
         reload: loadCategories
     } = useFetch(getCategories);
 
-    const handleDelete = async (id) => {
+    const { run } = useAsyncAction(setError);
+
+    const handleDelete = (id) => {
         const confirmed =
             window.confirm("Are you sure you want to delete this category?");
 
@@ -23,13 +26,10 @@ const CategoriesView = () => {
             return;
         }
 
-        try {
-            setError("");
+        run(async () => {
             await deleteCategory(id);
             await loadCategories();
-        } catch (error) {
-            setError(error.message);
-        }
+        });
     }
 
     return (

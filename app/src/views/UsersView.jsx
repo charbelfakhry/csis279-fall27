@@ -1,6 +1,7 @@
 import { Alert, Button, Card, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
+import useAsyncAction from "../hooks/useAsyncAction";
 import UsersTable from "../components/UsersTable";
 import { getUsers, deleteUser } from "../services/userService";
 
@@ -15,7 +16,9 @@ const UsersView = () => {
         reload: loadUsers
     } = useFetch(getUsers);
 
-    const handleDelete = async (id) => {
+    const { run } = useAsyncAction(setError);
+
+    const handleDelete = (id) => {
         const confirmed =
             window.confirm("Are you sure you want to delete this user?");
 
@@ -23,13 +26,10 @@ const UsersView = () => {
             return;
         }
 
-        try {
-            setError("");
+        run(async () => {
             await deleteUser(id);
             await loadUsers();
-        } catch (error) {
-            setError(error.message);
-        }
+        });
     }
 
     return (

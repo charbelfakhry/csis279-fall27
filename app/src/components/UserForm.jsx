@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
+import useForm from "../hooks/useForm";
 
 const getEmptyForm = () => ({
     firstName: "",
@@ -23,16 +23,7 @@ const getFormFromUser = (user) => {
 
 const UserForm = ({ selectedUser, onSave, onCancel }) => {
 
-    const [form, setForm] = useState(() => getFormFromUser(selectedUser));
-
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-
-        setForm({
-            ...form,
-            [name]: value
-        })
-    }
+    const { form, handleChange } = useForm(() => getFormFromUser(selectedUser));
 
     const handleSubmit = async (event) => {
         event.preventDefault();

@@ -1,6 +1,7 @@
 import { Alert, Button, Card, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
+import useAsyncAction from "../hooks/useAsyncAction";
 import SuppliersTable from "../components/SuppliersTable";
 import { getSuppliers, deleteSupplier } from "../services/supplierService";
 
@@ -15,7 +16,9 @@ const SuppliersView = () => {
         reload: loadSuppliers
     } = useFetch(getSuppliers);
 
-    const handleDelete = async (id) => {
+    const { run } = useAsyncAction(setError);
+
+    const handleDelete = (id) => {
         const confirmed =
             window.confirm("Are you sure you want to delete this supplier?");
 
@@ -23,13 +26,10 @@ const SuppliersView = () => {
             return;
         }
 
-        try {
-            setError("");
+        run(async () => {
             await deleteSupplier(id);
             await loadSuppliers();
-        } catch (error) {
-            setError(error.message);
-        }
+        });
     }
 
     return (

@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback } from "react";
 import { Alert, Card, Spinner } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
+import useFetch from "../hooks/useFetch";
+import useAsyncAction from "../hooks/useAsyncAction";
 import SupplierForm from "../components/SupplierForm";
 import {
     getSupplierById,
@@ -14,54 +16,23 @@ const SupplierFormView = () => {
     const navigate = useNavigate();
     const isEdit = Boolean(id);
 
-    const [supplier, setSupplier] = useState(null);
-    const [loading, setLoading] = useState(isEdit);
-    const [error, setError] = useState("");
+    const fetchSupplier = useCallback(
+        () => (isEdit ? getSupplierById(id) : Promise.resolve(null)),
+        [id, isEdit]
+    );
+    const { data: supplier, loading, error, setError } = useFetch(fetchSupplier, null);
 
-    useEffect(() => {
-        let cancelled = false;
+    const { run } = useAsyncAction(setError);
 
-        const loadData = async () => {
-            try {
-                const supplierData = await getSupplierById(id);
-                
-                if (!cancelled) {
-                    setSupplier(supplierData);
-                    setError("");
-                }
-            } catch (error) {
-                if (!cancelled) {
-                    setError(error.message);
-                }
-            } finally {
-                if (!cancelled) {
-                    setLoading(false);
-                }
-            }
-        }
-        if(isEdit){
-            loadData();
+    const handleSave = (data) => run(async () => {
+        if (isEdit) {
+            await updateSupplier(id, data);
+        } else {
+            await createSupplier(data);
         }
 
-        return () => {
-            cancelled = true;
-        }
-    }, [id, isEdit])
-
-    const handleSave = async (data) => {
-        try {
-            setError("");
-            if (isEdit) {
-                await updateSupplier(id, data);
-            } else {
-                await createSupplier(data);
-            }
-
-            navigate("/suppliers");
-        } catch (error) {
-            setError(error.message);
-        }
-    }
+        navigate("/suppliers");
+    });
 
     const handleCancel = () => {
         navigate("/suppliers");

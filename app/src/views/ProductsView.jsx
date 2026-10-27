@@ -1,6 +1,7 @@
 import { Alert, Button, Card, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
+import useAsyncAction from "../hooks/useAsyncAction";
 import ProductsTable from "../components/ProductsTable";
 import { getProducts, deleteProduct } from "../services/productService";
 
@@ -15,7 +16,9 @@ const ProductsView = () => {
         reload: loadProducts
     } = useFetch(getProducts);
 
-    const handleDelete = async (id) => {
+    const { run } = useAsyncAction(setError);
+
+    const handleDelete = (id) => {
         const confirmed =
             window.confirm("Are you sure you want to delete this product?");
 
@@ -23,13 +26,10 @@ const ProductsView = () => {
             return;
         }
 
-        try {
-            setError("");
+        run(async () => {
             await deleteProduct(id);
             await loadProducts();
-        } catch (error) {
-            setError(error.message);
-        }
+        });
     }
 
     return (

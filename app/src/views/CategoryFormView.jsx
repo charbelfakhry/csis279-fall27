@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback } from "react";
 import { Alert, Card, Spinner } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
+import useFetch from "../hooks/useFetch";
+import useAsyncAction from "../hooks/useAsyncAction";
 import CategoryForm from "../components/CategoryForm";
 import {
     getCategoryById,
@@ -14,56 +16,23 @@ const CategoryFormView = () => {
     const navigate = useNavigate();
     const isEdit = Boolean(id);
 
-    const [category, setCategory] = useState(null);
-    const [loading, setLoading] = useState(isEdit);
-    const [error, setError] = useState("");
+    const fetchCategory = useCallback(
+        () => (isEdit ? getCategoryById(id) : Promise.resolve(null)),
+        [id, isEdit]
+    );
+    const { data: category, loading, error, setError } = useFetch(fetchCategory, null);
 
-    useEffect(() => {
-        if (!isEdit) {
-            return;
+    const { run } = useAsyncAction(setError);
+
+    const handleSave = (data) => run(async () => {
+        if (isEdit) {
+            await updateCategory(id, data);
+        } else {
+            await createCategory(data);
         }
 
-        let cancelled = false;
-
-        const loadCategory = async () => {
-            try {
-                const data = await getCategoryById(id);
-                if (!cancelled) {
-                    setCategory(data);
-                    setError("");
-                }
-            } catch (error) {
-                if (!cancelled) {
-                    setError(error.message);
-                }
-            } finally {
-                if (!cancelled) {
-                    setLoading(false);
-                }
-            }
-        }
-
-        loadCategory();
-
-        return () => {
-            cancelled = true;
-        }
-    }, [id, isEdit])
-
-    const handleSave = async (data) => {
-        try {
-            setError("");
-            if (isEdit) {
-                await updateCategory(id, data);
-            } else {
-                await createCategory(data);
-            }
-
-            navigate("/categories");
-        } catch (error) {
-            setError(error.message);
-        }
-    }
+        navigate("/categories");
+    });
 
     const handleCancel = () => {
         navigate("/categories");

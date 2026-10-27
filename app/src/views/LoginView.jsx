@@ -2,37 +2,23 @@ import { useState } from "react";
 import { Alert, Button, Card, Form } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import useAuth from "../context/useAuth";
+import useForm from "../hooks/useForm";
+import useAsyncAction from "../hooks/useAsyncAction";
 
 const LoginView = () => {
 
     const { login } = useAuth();
     const location = useLocation();
 
-    const [form, setForm] = useState({ email: "", password: "" });
-    const [submitting, setSubmitting] = useState(false);
+    const { form, handleChange } = useForm({ email: "", password: "" });
     const [error, setError] = useState("");
-
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-
-        setForm({
-            ...form,
-            [name]: value
-        })
-    }
+    const { run, pending: submitting } = useAsyncAction(setError);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        try {
-            setSubmitting(true);
-            setError("");
-            // GuestRoute redirects once the user is set
-            await login(form.email, form.password);
-        } catch (error) {
-            setError(error.message);
-            setSubmitting(false);
-        }
+        // GuestRoute redirects once the user is set
+        await run(() => login(form.email, form.password));
     }
 
     return (

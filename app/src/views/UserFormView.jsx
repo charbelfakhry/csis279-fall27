@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback } from "react";
 import { Alert, Card, Spinner } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
+import useFetch from "../hooks/useFetch";
+import useAsyncAction from "../hooks/useAsyncAction";
 import UserForm from "../components/UserForm";
 import {
     getUserById,
@@ -14,56 +16,23 @@ const UserFormView = () => {
     const navigate = useNavigate();
     const isEdit = Boolean(id);
 
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(isEdit);
-    const [error, setError] = useState("");
+    const fetchUser = useCallback(
+        () => (isEdit ? getUserById(id) : Promise.resolve(null)),
+        [id, isEdit]
+    );
+    const { data: user, loading, error, setError } = useFetch(fetchUser, null);
 
-    useEffect(() => {
-        if (!isEdit) {
-            return;
+    const { run } = useAsyncAction(setError);
+
+    const handleSave = (data) => run(async () => {
+        if (isEdit) {
+            await updateUser(id, data);
+        } else {
+            await createUser(data);
         }
 
-        let cancelled = false;
-
-        const loadUser = async () => {
-            try {
-                const data = await getUserById(id);
-                if (!cancelled) {
-                    setUser(data);
-                    setError("");
-                }
-            } catch (error) {
-                if (!cancelled) {
-                    setError(error.message);
-                }
-            } finally {
-                if (!cancelled) {
-                    setLoading(false);
-                }
-            }
-        }
-
-        loadUser();
-
-        return () => {
-            cancelled = true;
-        }
-    }, [id, isEdit])
-
-    const handleSave = async (data) => {
-        try {
-            setError("");
-            if (isEdit) {
-                await updateUser(id, data);
-            } else {
-                await createUser(data);
-            }
-
-            navigate("/users");
-        } catch (error) {
-            setError(error.message);
-        }
-    }
+        navigate("/users");
+    });
 
     const handleCancel = () => {
         navigate("/users");
