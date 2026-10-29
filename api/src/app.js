@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("node:path");
 require("dotenv").config();
 
 const authRoutes = require("./routes/auth.route");
@@ -13,14 +14,10 @@ const permissionRoutes = require("./routes/permission.route");
 const requireAuth = require("./middleware/auth.middleware");
 
 const app = express();
+const distPath = path.join(__dirname, "../dist");
 app.use(cors());
 app.use(express.json());
-
-app.get("/", (req, res) =>{
-    res.json({
-        message: "API Running..."
-    })
-})
+app.use(express.static(distPath));
 
 // login and register are public, everything else needs a token.
 // each route then checks the permission it needs (see permission.middleware.js)
@@ -32,6 +29,13 @@ app.use("/api/suppliers", requireAuth, supplierRoutes);
 app.use("/api/orders", requireAuth, orderRoutes);
 app.use("/api/roles", requireAuth, roleRoutes);
 app.use("/api/permissions", requireAuth, permissionRoutes);
+app.use((req, res, next) => {
+    if ((req.method !== "GET" && req.method !== "HEAD") || req.path === "/api" || req.path.startsWith("/api/")) {
+        return next();
+    }
+
+    res.sendFile(path.join(distPath, "index.html"));
+});
 app.use((req, res)=>{
     res.status(404).json({
         message: "Route not found"
