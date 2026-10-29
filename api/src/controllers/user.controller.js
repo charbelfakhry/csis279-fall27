@@ -1,5 +1,6 @@
 const userService = require("../services/user.service");
 const validateUser = require("../validators/user.validator");
+const { validateUserRoles } = require("../validators/role.validator");
 
 const sendError = (res, error) => {
     const status = error.status || 500;
@@ -81,10 +82,26 @@ const deleteUser = async(req, res) =>{
     }
 }
 
+const updateUserRoles = async(req, res) =>{
+    try {
+        const errors = validateUserRoles(req.body);
+
+        if(errors.length > 0){
+            return res.status(400).json({ errors });
+        }
+
+        const result = await userService.updateUserRoles(req.params.id, req.body.roleIds, req.userId);
+        res.status(200).json(result);
+    } catch (error) {
+        sendError(res, error);
+    }
+}
+
 module.exports = {
     getAllUsers,
     getUserById,
     createUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    updateUserRoles
 }

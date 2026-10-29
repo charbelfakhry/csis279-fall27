@@ -8,6 +8,8 @@ const productRoutes = require("./routes/product.route");
 const categoryRoutes = require("./routes/category.route");
 const supplierRoutes = require("./routes/supplier.route");
 const orderRoutes = require("./routes/order.route");
+const roleRoutes = require("./routes/role.route");
+const permissionRoutes = require("./routes/permission.route");
 const requireAuth = require("./middleware/auth.middleware");
 
 const app = express();
@@ -20,13 +22,16 @@ app.get("/", (req, res) =>{
     })
 })
 
-// login and register are public, everything else needs a token
+// login and register are public, everything else needs a token.
+// each route then checks the permission it needs (see permission.middleware.js)
 app.use("/api/auth", authRoutes);
 app.use("/api/users", requireAuth, userRoutes);
 app.use("/api/products", requireAuth, productRoutes);
 app.use("/api/categories", requireAuth, categoryRoutes);
 app.use("/api/suppliers", requireAuth, supplierRoutes);
 app.use("/api/orders", requireAuth, orderRoutes);
+app.use("/api/roles", requireAuth, roleRoutes);
+app.use("/api/permissions", requireAuth, permissionRoutes);
 app.use((req, res)=>{
     res.status(404).json({
         message: "Route not found"

@@ -1,6 +1,8 @@
 const userRepository = require("../repositories/user.repository");
+const roleRepository = require("../repositories/role.repository");
 
 const UNIQUE_VIOLATION = "23505";
+const FOREIGN_KEY_VIOLATION = "23503";
 
 const notFound = () =>{
     const error = new Error("User not found");
@@ -83,10 +85,36 @@ const deleteUser = async(id) =>{
     return deletedUser;
 }
 
+// replaces the user's roles. changing your own roles is blocked so an admin
+// can't accidentally remove their own access
+const updateUserRoles = async(id, roleIds, currentUserId) =>{
+    if(Number(id) === currentUserId){
+        const error = new Error("You can't change your own roles");
+        error.status = 409;
+        throw error;
+    }
+
+    await getUserById(id);
+
+    try{
+        await roleRepository.setUserRoles(id, [...new Set(roleIds)]);
+    }catch(error){
+        if(error.code === FOREIGN_KEY_VIOLATION){
+            const badRequest = new Error("One or more roles do not exist");
+            badRequest.status = 400;
+            throw badRequest;
+        }
+        throw error;
+    }
+
+    return await getUserById(id);
+}
+
 module.exports = {
     getAllUsers,
     getUserById,
     createUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    updateUserRoles
 }

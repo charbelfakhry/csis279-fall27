@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const userRepository = require("../repositories/user.repository");
+const permissionRepository = require("../repositories/permission.repository");
 
 const UNIQUE_VIOLATION = "23505";
 const SALT_ROUNDS = 10;
@@ -20,6 +21,18 @@ const createToken = (user) =>{
     return jwt.sign({ sub: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: TOKEN_EXPIRES_IN });
 }
 
+// the user sent to the frontend: profile, roles and permission codes, so it can
+// hide what the user can't do. the API still checks every request on its own
+const getSessionUser = async (userId) =>{
+    const user = await userRepository.findById(userId);
+    if(!user){
+        return undefined;
+    }
+
+    const permissions = await permissionRepository.findCodesByUserId(userId);
+    return { ...user, permissions };
+}
+
 const register = async (user, password) =>{
     const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
 
@@ -35,7 +48,7 @@ const register = async (user, password) =>{
         throw error;
     }
 
-    return { token: createToken(createdUser), user: createdUser };
+    return { token: createToken(createdUser), user: await getSessionUser(createdUser.id) };
 }
 
 const login = async (email, password) =>{
@@ -46,8 +59,7 @@ const login = async (email, password) =>{
         throw unauthorized();
     }
 
-    const { passwordHash, ...user } = found;
-    return { token: createToken(user), user };
+    return { token: createToken(found), user: await getSessionUser(found.id) };
 }
 
 // returns the user id from a valid token, or throws 401
@@ -60,7 +72,7 @@ const verifyToken = (token) =>{
 }
 
 const getCurrentUser = async (userId) =>{
-    const user = await userRepository.findById(userId);
+    const user = await getSessionUser(userId);
     if(!user){
         throw unauthorized("Your account no longer exists");
     }
