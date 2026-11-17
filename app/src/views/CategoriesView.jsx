@@ -1,5 +1,6 @@
 import { Alert, Button, Card, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import Can from "../components/Can";
 import useFetch from "../hooks/useFetch";
 import useAsyncAction from "../hooks/useAsyncAction";
 import CategoriesTable from "../components/CategoriesTable";
@@ -36,9 +37,11 @@ const CategoriesView = () => {
         <>
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h1 className="h3 mb-0">Category Management</h1>
-                <Button onClick={() => navigate("/categories/new")}>
-                    + Add Category
-                </Button>
+                <Can permission="categories:create">
+                    <Button onClick={() => navigate("/categories/new")}>
+                        + Add Category
+                    </Button>
+                </Can>
             </div>
 
             {

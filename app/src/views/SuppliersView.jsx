@@ -1,5 +1,6 @@
 import { Alert, Button, Card, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import Can from "../components/Can";
 import useFetch from "../hooks/useFetch";
 import useAsyncAction from "../hooks/useAsyncAction";
 import SuppliersTable from "../components/SuppliersTable";
@@ -36,9 +37,11 @@ const SuppliersView = () => {
         <>
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h1 className="h3 mb-0">Supplier Management</h1>
-                <Button onClick={() => navigate("/suppliers/new")}>
-                    + Add Supplier
-                </Button>
+                <Can permission="suppliers:create">
+                    <Button onClick={() => navigate("/suppliers/new")}>
+                        + Add Supplier
+                    </Button>
+                </Can>
             </div>
 
             {

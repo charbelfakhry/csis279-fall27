@@ -1,5 +1,6 @@
 import { Alert, Button, Card, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import Can from "../components/Can";
 import useFetch from "../hooks/useFetch";
 import useAsyncAction from "../hooks/useAsyncAction";
 import ProductsTable from "../components/ProductsTable";
@@ -36,9 +37,11 @@ const ProductsView = () => {
         <>
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h1 className="h3 mb-0">Product Management</h1>
-                <Button onClick={() => navigate("/products/new")}>
-                    + Add Product
-                </Button>
+                <Can permission="products:create">
+                    <Button onClick={() => navigate("/products/new")}>
+                        + Add Product
+                    </Button>
+                </Can>
             </div>
 
             {

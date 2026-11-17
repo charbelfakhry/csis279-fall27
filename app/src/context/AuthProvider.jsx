@@ -66,7 +66,18 @@ const AuthProvider = ({ children }) => {
         setUser(null);
     }, []);
 
-    const value = useMemo(() => ({ user, loading, login, register, logout }), [user, loading, login, register, logout]);
+    // reloads the user's roles and permissions, e.g. after editing a role they have
+    const refreshUser = useCallback(async () => {
+        setUser(await authService.getCurrentUser());
+    }, []);
+
+    // only used to hide what the user can't do; the API checks every request itself
+    const can = useCallback((permission) => Boolean(user?.permissions?.includes(permission)), [user]);
+
+    const value = useMemo(
+        () => ({ user, loading, login, register, logout, refreshUser, can }),
+        [user, loading, login, register, logout, refreshUser, can]
+    );
 
     return (
         <AuthContext.Provider value={value}>

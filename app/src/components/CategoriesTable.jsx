@@ -1,5 +1,6 @@
 import { Badge, Button, Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import Can from "./Can";
 
 const CategoriesTable = ({ categories, onDelete }) => {
     const navigate = useNavigate();
@@ -32,21 +33,25 @@ const CategoriesTable = ({ categories, onDelete }) => {
                                 </Badge>
                             </td>
                             <td className="text-end text-nowrap">
-                                <Button
-                                    size="sm"
-                                    variant="outline-primary"
-                                    className="me-2"
-                                    onClick={() => navigate(`/categories/${category.id}/edit`)}
-                                >
-                                    Edit
-                                </Button>
-                                <Button
-                                    size="sm"
-                                    variant="outline-danger"
-                                    onClick={() => onDelete(category.id)}
-                                >
-                                    Delete
-                                </Button>
+                                <Can permission="categories:update">
+                                    <Button
+                                        size="sm"
+                                        variant="outline-primary"
+                                        className="me-2"
+                                        onClick={() => navigate(`/categories/${category.id}/edit`)}
+                                    >
+                                        Edit
+                                    </Button>
+                                </Can>
+                                <Can permission="categories:delete">
+                                    <Button
+                                        size="sm"
+                                        variant="outline-danger"
+                                        onClick={() => onDelete(category.id)}
+                                    >
+                                        Delete
+                                    </Button>
+                                </Can>
                             </td>
                         </tr>
                     ))

@@ -1,9 +1,10 @@
 import { Button, Container, Nav, Navbar } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import useAuth from "../context/useAuth";
+import navItems from "../navigation";
 
 const AppNavbar = () => {
-    const { user, logout } = useAuth();
+    const { user, logout, can } = useAuth();
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -19,15 +20,11 @@ const AppNavbar = () => {
                 <Navbar.Collapse id="main-navbar">
                     <Nav className="ms-auto align-items-md-center">
                         {
-                            user && (
-                                <>
-                                    <Nav.Link as={NavLink} to="/users">Users</Nav.Link>
-                                    <Nav.Link as={NavLink} to="/products">Products</Nav.Link>
-                                    <Nav.Link as={NavLink} to="/categories">Categories</Nav.Link>
-                                    <Nav.Link as={NavLink} to="/suppliers">Suppliers</Nav.Link>
-                                    <Nav.Link as={NavLink} to="/orders">Orders</Nav.Link>
-                                </>
-                            )
+                            navItems
+                                .filter((item) => can(item.permission))
+                                .map((item) => (
+                                    <Nav.Link key={item.to} as={NavLink} to={item.to}>{item.label}</Nav.Link>
+                                ))
                         }
                         <Nav.Link as={NavLink} to="/contactus">Contact Us</Nav.Link>
                         {
@@ -35,6 +32,13 @@ const AppNavbar = () => {
                                 <>
                                     <Navbar.Text className="ms-md-3 me-md-2">
                                         {user.firstName} {user.lastName}
+                                        {
+                                            user.roles?.length > 0 && (
+                                                <small className="ms-2 text-white-50">
+                                                    ({user.roles.map((role) => role.name).join(", ")})
+                                                </small>
+                                            )
+                                        }
                                     </Navbar.Text>
                                     <Button variant="outline-light" size="sm" onClick={handleLogout}>
                                         Log Out

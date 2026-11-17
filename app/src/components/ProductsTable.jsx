@@ -1,5 +1,6 @@
 import { Button, Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import Can from "./Can";
 
 const ProductsTable = ({ products, onDelete }) => {
     const navigate = useNavigate();
@@ -31,21 +32,25 @@ const ProductsTable = ({ products, onDelete }) => {
                             <td className="text-end">{product.price.toFixed(2)}</td>
                             <td className="text-end">{product.quantity}</td>
                             <td className="text-end text-nowrap">
-                                <Button
-                                    size="sm"
-                                    variant="outline-primary"
-                                    className="me-2"
-                                    onClick={() => navigate(`/products/${product.id}/edit`)}
-                                >
-                                    Edit
-                                </Button>
-                                <Button
-                                    size="sm"
-                                    variant="outline-danger"
-                                    onClick={() => onDelete(product.id)}
-                                >
-                                    Delete
-                                </Button>
+                                <Can permission="products:update">
+                                    <Button
+                                        size="sm"
+                                        variant="outline-primary"
+                                        className="me-2"
+                                        onClick={() => navigate(`/products/${product.id}/edit`)}
+                                    >
+                                        Edit
+                                    </Button>
+                                </Can>
+                                <Can permission="products:delete">
+                                    <Button
+                                        size="sm"
+                                        variant="outline-danger"
+                                        onClick={() => onDelete(product.id)}
+                                    >
+                                        Delete
+                                    </Button>
+                                </Can>
                             </td>
                         </tr>
                     ))

@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import AppNavbar from "./components/AppNavbar";
 import UsersView from "./views/UsersView";
@@ -17,6 +17,34 @@ import LoginView from "./views/LoginView";
 import RegisterView from "./views/RegisterView";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
+import PermissionRoute from "./components/PermissionRoute";
+import HomeView from "./views/HomeView";
+import RolesView from "./views/RolesView";
+import RoleFormView from "./views/RoleFormView";
+import UserRolesView from "./views/UserRolesView";
+
+// each page and the permission needed to open it (the API checks the same permissions)
+const pages = [
+  { path: "/users", element: <UsersView />, permission: "users:read" },
+  { path: "/users/new", element: <UserFormView />, permission: "users:create" },
+  { path: "/users/:id/edit", element: <UserFormView />, permission: "users:update" },
+  { path: "/users/:id/roles", element: <UserRolesView />, permission: "roles:manage" },
+  { path: "/products", element: <ProductsView />, permission: "products:read" },
+  { path: "/products/new", element: <ProductFormView />, permission: "products:create" },
+  { path: "/products/:id/edit", element: <ProductFormView />, permission: "products:update" },
+  { path: "/suppliers", element: <SuppliersView />, permission: "suppliers:read" },
+  { path: "/suppliers/new", element: <SupplierFormView />, permission: "suppliers:create" },
+  { path: "/suppliers/:id/edit", element: <SupplierFormView />, permission: "suppliers:update" },
+  { path: "/orders", element: <OrdersView />, permission: "orders:read" },
+  { path: "/orders/new", element: <OrderFormView />, permission: "orders:create" },
+  { path: "/orders/:id/edit", element: <OrderFormView />, permission: "orders:update" },
+  { path: "/categories", element: <CategoriesView />, permission: "categories:read" },
+  { path: "/categories/new", element: <CategoryFormView />, permission: "categories:create" },
+  { path: "/categories/:id/edit", element: <CategoryFormView />, permission: "categories:update" },
+  { path: "/roles", element: <RolesView />, permission: "roles:read" },
+  { path: "/roles/new", element: <RoleFormView />, permission: "roles:manage" },
+  { path: "/roles/:id/edit", element: <RoleFormView />, permission: "roles:manage" }
+];
 
 function App() {
   return (
@@ -30,22 +58,14 @@ function App() {
           </Route>
           {/* everything below needs a logged-in user */}
           <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<Navigate to="/users" replace />} />
-            <Route path="/users" element={<UsersView />} />
-            <Route path="/users/new" element={<UserFormView />} />
-            <Route path="/users/:id/edit" element={<UserFormView />} />
-            <Route path="/products" element={<ProductsView />} />
-            <Route path="/products/new" element={<ProductFormView />} />
-            <Route path="/products/:id/edit" element={<ProductFormView />} />
-            <Route path="/suppliers" element={<SuppliersView />} />
-            <Route path="/suppliers/new" element={<SupplierFormView />} />
-            <Route path="/suppliers/:id/edit" element={<SupplierFormView />} />
-            <Route path="/orders" element={<OrdersView />} />
-            <Route path="/orders/new" element={<OrderFormView />} />
-            <Route path="/orders/:id/edit" element={<OrderFormView />} />
-            <Route path="/categories" element={<CategoriesView />} />
-            <Route path="/categories/new" element={<CategoryFormView />} />
-            <Route path="/categories/:id/edit" element={<CategoryFormView />} />
+            <Route path="/" element={<HomeView />} />
+            {
+              pages.map(({ path, element, permission }) => (
+                <Route key={path} element={<PermissionRoute permission={permission} />}>
+                  <Route path={path} element={element} />
+                </Route>
+              ))
+            }
           </Route>
           <Route path="/contactus" element={<ContactUs />} />
           <Route path="*" element={<NotFoundView />} />

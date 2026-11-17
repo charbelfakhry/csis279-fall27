@@ -1,5 +1,6 @@
-import { Button, Table } from "react-bootstrap";
+import { Badge, Button, Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import Can from "./Can";
 
 const UsersTable = ({ users, onDelete }) => {
     const navigate = useNavigate();
@@ -17,6 +18,7 @@ const UsersTable = ({ users, onDelete }) => {
                     <th>Last Name</th>
                     <th>Email</th>
                     <th>Age</th>
+                    <th>Roles</th>
                     <th className="text-end">Actions</th>
                 </tr>
             </thead>
@@ -29,22 +31,43 @@ const UsersTable = ({ users, onDelete }) => {
                             <td>{user.lastName}</td>
                             <td>{user.email}</td>
                             <td>{user.age}</td>
+                            <td>
+                                {
+                                    user.roles.map((role) => (
+                                        <Badge key={role.id} bg="secondary" className="me-1">{role.name}</Badge>
+                                    ))
+                                }
+                            </td>
                             <td className="text-end text-nowrap">
-                                <Button
-                                    size="sm"
-                                    variant="outline-primary"
-                                    className="me-2"
-                                    onClick={() => navigate(`/users/${user.id}/edit`)}
-                                >
-                                    Edit
-                                </Button>
-                                <Button
-                                    size="sm"
-                                    variant="outline-danger"
-                                    onClick={() => onDelete(user.id)}
-                                >
-                                    Delete
-                                </Button>
+                                <Can permission="roles:manage">
+                                    <Button
+                                        size="sm"
+                                        variant="outline-secondary"
+                                        className="me-2"
+                                        onClick={() => navigate(`/users/${user.id}/roles`)}
+                                    >
+                                        Roles
+                                    </Button>
+                                </Can>
+                                <Can permission="users:update">
+                                    <Button
+                                        size="sm"
+                                        variant="outline-primary"
+                                        className="me-2"
+                                        onClick={() => navigate(`/users/${user.id}/edit`)}
+                                    >
+                                        Edit
+                                    </Button>
+                                </Can>
+                                <Can permission="users:delete">
+                                    <Button
+                                        size="sm"
+                                        variant="outline-danger"
+                                        onClick={() => onDelete(user.id)}
+                                    >
+                                        Delete
+                                    </Button>
+                                </Can>
                             </td>
                         </tr>
                     ))

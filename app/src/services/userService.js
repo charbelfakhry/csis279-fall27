@@ -43,3 +43,15 @@ export const deleteUser = async (id) =>{
 
     return handleResponse(response);
 }
+
+// replaces all of the user's roles
+export const updateUserRoles = async(id, roleIds) => {
+    const response = await apiFetch(`${API_URL}/${id}/roles`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ roleIds })
+    });
+    return handleResponse(response);
+}

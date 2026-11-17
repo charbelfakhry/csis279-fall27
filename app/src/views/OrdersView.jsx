@@ -1,5 +1,6 @@
 import { Alert, Button, Card, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import Can from "../components/Can";
 import useFetch from "../hooks/useFetch";
 import useAsyncAction from "../hooks/useAsyncAction";
 import OrdersTable from "../components/OrdersTable";
@@ -36,9 +37,11 @@ const OrdersView = () => {
         <>
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h1 className="h3 mb-0">Order Management</h1>
-                <Button onClick={() => navigate("/orders/new")}>
-                    + Add Order
-                </Button>
+                <Can permission="orders:create">
+                    <Button onClick={() => navigate("/orders/new")}>
+                        + Add Order
+                    </Button>
+                </Can>
             </div>
 
             {

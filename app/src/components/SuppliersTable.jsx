@@ -1,5 +1,6 @@
 import { Button, Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import Can from "./Can";
 
 const SuppliersTable = ({ suppliers, onDelete }) => {
     const navigate = useNavigate();
@@ -28,21 +29,25 @@ const SuppliersTable = ({ suppliers, onDelete }) => {
                             <td className="text-body-secondary">{supplier.email}</td>
                             <td className="text-end">{supplier.phone}</td>
                             <td className="text-end text-nowrap">
-                                <Button
-                                    size="sm"
-                                    variant="outline-primary"
-                                    className="me-2"
-                                    onClick={() => navigate(`/suppliers/${supplier.id}/edit`)}
-                                >
-                                    Edit
-                                </Button>
-                                <Button
-                                    size="sm"
-                                    variant="outline-danger"
-                                    onClick={() => onDelete(supplier.id)}
-                                >
-                                    Delete
-                                </Button>
+                                <Can permission="suppliers:update">
+                                    <Button
+                                        size="sm"
+                                        variant="outline-primary"
+                                        className="me-2"
+                                        onClick={() => navigate(`/suppliers/${supplier.id}/edit`)}
+                                    >
+                                        Edit
+                                    </Button>
+                                </Can>
+                                <Can permission="suppliers:delete">
+                                    <Button
+                                        size="sm"
+                                        variant="outline-danger"
+                                        onClick={() => onDelete(supplier.id)}
+                                    >
+                                        Delete
+                                    </Button>
+                                </Can>
                             </td>
                         </tr>
                     ))

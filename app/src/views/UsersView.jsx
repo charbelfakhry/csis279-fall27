@@ -1,5 +1,6 @@
 import { Alert, Button, Card, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import Can from "../components/Can";
 import useFetch from "../hooks/useFetch";
 import useAsyncAction from "../hooks/useAsyncAction";
 import UsersTable from "../components/UsersTable";
@@ -36,9 +37,11 @@ const UsersView = () => {
         <>
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h1 className="h3 mb-0">User Management</h1>
-                <Button onClick={() => navigate("/users/new")}>
-                    + Add User
-                </Button>
+                <Can permission="users:create">
+                    <Button onClick={() => navigate("/users/new")}>
+                        + Add User
+                    </Button>
+                </Can>
             </div>
 
             {
