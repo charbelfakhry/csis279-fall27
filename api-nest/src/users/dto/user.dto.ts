@@ -1,0 +1,32 @@
+import { Transform } from 'class-transformer';
+import { IsEmail, IsInt, IsNotEmpty, IsOptional, IsString, Max, Min } from 'class-validator';
+import { toNumber, trim } from '../../common/transforms.js';
+
+const MAX_AGE = 150;
+const AGE_MESSAGE = `Age must be a whole number between 0 and ${MAX_AGE}`;
+
+// the profile fields, shared by the Users page and registration
+export class UserDto {
+  @Transform(trim)
+  @IsString({ message: 'First name is required' })
+  @IsNotEmpty({ message: 'First name is required' })
+  firstName: string;
+
+  @Transform(trim)
+  @IsString({ message: 'Last name is required' })
+  @IsNotEmpty({ message: 'Last name is required' })
+  lastName: string;
+
+  @Transform(trim)
+  @IsString({ message: 'Email is required' })
+  @IsNotEmpty({ message: 'Email is required' })
+  @IsEmail({}, { message: 'Invalid email' })
+  email: string;
+
+  @IsOptional()
+  @Transform(toNumber)
+  @IsInt({ message: AGE_MESSAGE })
+  @Min(0, { message: AGE_MESSAGE })
+  @Max(MAX_AGE, { message: AGE_MESSAGE })
+  age?: number | null;
+}
