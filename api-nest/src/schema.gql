@@ -1,0 +1,188 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AuthPayload {
+  token: String!
+  user: SessionUser!
+}
+
+type Category {
+  createdAt: DateTime!
+  description: String
+  id: Int!
+  isActive: Boolean!
+  name: String!
+}
+
+input CategoryInput {
+  description: String
+  isActive: Boolean
+  name: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  createCategory(input: CategoryInput!): Category!
+  createOrder(input: OrderInput!): Order!
+  createProduct(input: ProductInput!): Product!
+  createRole(input: RoleInput!): Role!
+  createSupplier(input: SupplierInput!): Supplier!
+  createUser(input: UserInput!): User!
+  deleteCategory(id: Int!): Boolean!
+  deleteOrder(id: Int!): Boolean!
+  deleteProduct(id: Int!): Boolean!
+  deleteRole(id: Int!): Boolean!
+  deleteSupplier(id: Int!): Boolean!
+  deleteUser(id: Int!): Boolean!
+  login(input: LoginInput!): AuthPayload!
+  register(input: RegisterInput!): AuthPayload!
+  updateCategory(id: Int!, input: CategoryInput!): Category!
+  updateOrder(id: Int!, input: OrderInput!): Order!
+  updateProduct(id: Int!, input: ProductInput!): Product!
+  updateRole(id: Int!, input: RoleInput!): Role!
+  updateSupplier(id: Int!, input: SupplierInput!): Supplier!
+  updateUser(id: Int!, input: UserInput!): User!
+  updateUserRoles(id: Int!, input: UserRolesInput!): User!
+}
+
+type Order {
+  id: Int!
+  productId: Int!
+  productName: String!
+  quantity: Int!
+  unitPrice: Float
+}
+
+input OrderInput {
+  productId: Int!
+  quantity: Int!
+  unitPrice: Float
+}
+
+type Permission {
+  code: String!
+  description: String
+  id: Int!
+}
+
+type Product {
+  category: Category
+  categoryId: Int
+  createdAt: DateTime!
+  description: String
+  id: Int!
+  name: String!
+  price: Float!
+  quantity: Int!
+}
+
+input ProductInput {
+  categoryId: Int
+  description: String
+  name: String!
+  price: Float!
+  quantity: Int
+}
+
+type Query {
+  categories: [Category!]!
+  category(id: Int!): Category!
+  me: SessionUser!
+  order(id: Int!): Order!
+  orders: [Order!]!
+  permissions: [Permission!]!
+  product(id: Int!): Product!
+  products: [Product!]!
+  role(id: Int!): Role!
+  roles: [Role!]!
+  supplier(id: Int!): Supplier!
+  suppliers: [Supplier!]!
+  user(id: Int!): User!
+  users: [User!]!
+}
+
+input RegisterInput {
+  age: Int
+  email: String!
+  firstName: String!
+  lastName: String!
+  password: String!
+}
+
+type Role {
+  description: String
+  id: Int!
+  isDefault: Boolean!
+  isSystem: Boolean!
+  name: String!
+  permissions: [String!]!
+  userCount: Int!
+}
+
+input RoleInput {
+  description: String
+  isDefault: Boolean
+  name: String!
+  permissions: [String!]!
+}
+
+type RoleSummary {
+  id: Int!
+  name: String!
+}
+
+type SessionUser {
+  age: Int
+  createdAt: DateTime!
+  email: String!
+  firstName: String!
+  id: Int!
+  lastName: String!
+  permissions: [String!]!
+  roles: [RoleSummary!]!
+}
+
+type Supplier {
+  createdAt: DateTime!
+  email: String!
+  id: Int!
+  name: String!
+  phone: String
+}
+
+input SupplierInput {
+  email: String!
+  name: String!
+  phone: String
+}
+
+type User {
+  age: Int
+  createdAt: DateTime!
+  email: String!
+  firstName: String!
+  id: Int!
+  lastName: String!
+  roles: [RoleSummary!]!
+}
+
+input UserInput {
+  age: Int
+  email: String!
+  firstName: String!
+  lastName: String!
+}
+
+input UserRolesInput {
+  roleIds: [Int!]!
+}

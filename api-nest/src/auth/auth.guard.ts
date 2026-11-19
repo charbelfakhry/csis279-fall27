@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { AuthenticatedRequest } from '../common/authenticated-request.js';
+import { getRequest } from '../common/get-request.js';
 import { IS_PUBLIC_KEY } from './public.decorator.js';
 
 // expects "Authorization: Bearer <token>" and sets request.userId
@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
     ]);
     if (isPublic) return true;
 
-    const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
+    const request = getRequest(context);
     const [scheme, token] = (request.headers.authorization ?? '').split(' ');
     if (scheme !== 'Bearer' || !token) {
       throw new UnauthorizedException('Please log in to continue');

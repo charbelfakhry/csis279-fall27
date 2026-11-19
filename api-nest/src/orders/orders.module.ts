@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { OrdersResolver } from './graphql/orders.resolver.js';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Product } from '../products/product.model.js';
 import { Order } from './order.model.js';
@@ -9,6 +10,6 @@ import { OrdersService } from './orders.service.js';
 @Module({
   imports: [SequelizeModule.forFeature([Order, Product])],
   controllers: [OrdersController],
-  providers: [OrdersService, OrdersRepository],
+  providers: [OrdersService, OrdersRepository, OrdersResolver],
 })
 export class OrdersModule {}

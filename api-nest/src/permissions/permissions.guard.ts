@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { AuthenticatedRequest } from '../common/authenticated-request.js';
+import { getRequest } from '../common/get-request.js';
 import { PermissionsRepository } from './permissions.repository.js';
 import { PERMISSIONS_KEY } from './require-permissions.decorator.js';
 
@@ -21,7 +21,7 @@ export class PermissionsGuard implements CanActivate {
     ]);
     if (!required?.length) return true;
 
-    const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
+    const request = getRequest(context);
     request.permissions ??= new Set(await this.permissionsRepository.findCodesByUserId(request.userId));
 
     if (!required.every((code) => request.permissions!.has(code))) {

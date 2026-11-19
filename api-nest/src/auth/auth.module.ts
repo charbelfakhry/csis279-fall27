@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { AuthResolver } from './graphql/auth.resolver.js';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PermissionsModule } from '../permissions/permissions.module.js';
@@ -20,7 +21,7 @@ import { AuthService } from './auth.service.js';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, AuthGuard],
+  providers: [AuthService, AuthGuard, AuthResolver],
   exports: [AuthGuard],
 })
 export class AuthModule {}

@@ -1,31 +1,36 @@
-import apiFetch from "./apiFetch";
-import handleResponse from "./handleResponse";
+import graphqlFetch from "./graphqlFetch";
 
-const API_URL = `${import.meta.env.VITE_API_URL}/auth`;
+// the logged-in user: profile, roles and the permission codes the UI uses to hide what they can't do
+const SESSION_USER = `id firstName lastName email age createdAt roles { id name } permissions`;
 
 export const register = async (user) => {
-    const response = await fetch(`${API_URL}/register`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(user)
-    });
-    return handleResponse(response);
+    const data = await graphqlFetch(
+        `mutation Register($input: RegisterInput!) {
+            register(input: $input) { token user { ${SESSION_USER} } }
+        }`,
+        {
+            input: {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                password: user.password
+            }
+        }
+    );
+    return data.register;
 }
 
 export const login = async (email, password) => {
-    const response = await fetch(`${API_URL}/login`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email, password })
-    });
-    return handleResponse(response);
+    const data = await graphqlFetch(
+        `mutation Login($input: LoginInput!) {
+            login(input: $input) { token user { ${SESSION_USER} } }
+        }`,
+        { input: { email, password } }
+    );
+    return data.login;
 }
 
 export const getCurrentUser = async () => {
-    const response = await apiFetch(`${API_URL}/me`);
-    return handleResponse(response);
+    const data = await graphqlFetch(`query Me { me { ${SESSION_USER} } }`);
+    return data.me;
 }

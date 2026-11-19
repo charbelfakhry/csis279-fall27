@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { RolesResolver } from './graphql/roles.resolver.js';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Permission } from '../permissions/permission.model.js';
 import { PermissionsModule } from '../permissions/permissions.module.js';
@@ -11,6 +12,6 @@ import { RolesService } from './roles.service.js';
 @Module({
   imports: [SequelizeModule.forFeature([Role, Permission, RolePermission]), PermissionsModule],
   controllers: [RolesController],
-  providers: [RolesService, RolesRepository],
+  providers: [RolesService, RolesRepository, RolesResolver],
 })
 export class RolesModule {}

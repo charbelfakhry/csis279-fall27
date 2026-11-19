@@ -40,9 +40,32 @@ and are all registered in `database/database.module.ts`.
   so removing a permission works immediately.
 - Validation errors are `400 { errors: [...] }` with one message per field; other errors are `{ message }`.
 
+## GraphQL
+
+The React app talks to the API through GraphQL at **`POST /api/graphql`** (`app/src/services/graphqlFetch.js`).
+The REST routes above still work and share the same services, so both APIs always behave the same.
+
+- Code first: each feature has a `graphql/` folder with its object types and resolver. The DTOs double as
+  input types (`@InputType`), so validation rules live in one place. The generated schema is `src/schema.gql`.
+- Same security: `AuthGuard` and `PermissionsGuard` run for every query, mutation and `@ResolveField`
+  (`Product.category` needs `categories:read`); `register` and `login` are `@Public()`.
+- Errors come back in the `errors` array with HTTP 200. `extensions.code` is one of `BAD_REQUEST` (with
+  `extensions.errors`, one message per field), `UNAUTHENTICATED`, `FORBIDDEN`, `NOT_FOUND`, `CONFLICT`.
+- `Product.category` is batched with a per-request DataLoader, so a product list costs one categories query.
+
+Step-by-step tutorial on how this was built: [tutorials/graphql](../tutorials/graphql/README.md).
+
+Open http://localhost:3000/api/graphql in a browser for the Apollo Sandbox. Add an `Authorization: Bearer <token>`
+header (the token is in the React app's localStorage, or from the `login` mutation).
+
+```graphql
+mutation { login(input: { email: "you@example.com", password: "..." }) { token user { permissions } } }
+query { products { name price category { name } } }
+```
+
 ## Tests
 
 ```bash
 npm test            # unit tests
-npm run test:e2e    # every endpoint, against the database in .env (cleans up after itself)
+npm run test:e2e    # every REST endpoint and GraphQL operation, against the database in .env (cleans up after itself)
 ```

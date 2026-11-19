@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Op } from 'sequelize';
 import { Category } from './category.model.js';
 import { CategoryDto } from './dto/category.dto.js';
 
@@ -20,6 +21,12 @@ export class CategoriesRepository {
 
   async findById(id: number) {
     return (await this.categoryModel.findByPk(id))?.toJSON();
+  }
+
+  // for CategoriesLoader: many categories in one query
+  async findByIds(ids: number[]) {
+    const categories = await this.categoryModel.findAll({ where: { id: { [Op.in]: ids } } });
+    return categories.map((category) => category.toJSON());
   }
 
   async create(category: CategoryDto) {

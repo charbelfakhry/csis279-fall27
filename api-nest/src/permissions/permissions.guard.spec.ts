@@ -4,6 +4,7 @@ import { PermissionsGuard } from './permissions.guard.js';
 
 const contextFor = (request: object) =>
   ({
+    getType: () => 'http',
     getHandler: () => undefined,
     getClass: () => undefined,
     switchToHttp: () => ({ getRequest: () => request }),

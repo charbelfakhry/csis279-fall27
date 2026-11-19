@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { UsersResolver } from './graphql/users.resolver.js';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Role } from '../roles/role.model.js';
 import { UserRole } from '../roles/user-role.model.js';
@@ -10,7 +11,7 @@ import { UsersService } from './users.service.js';
 @Module({
   imports: [SequelizeModule.forFeature([User, Role, UserRole])],
   controllers: [UsersController],
-  providers: [UsersService, UsersRepository],
+  providers: [UsersService, UsersRepository, UsersResolver],
   exports: [UsersRepository],
 })
 export class UsersModule {}
