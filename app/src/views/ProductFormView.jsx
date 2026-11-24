@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { Alert, Card, Spinner } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
+import useCategories from "../hooks/useCategories";
 import useFetch from "../hooks/useFetch";
 import useAsyncAction from "../hooks/useAsyncAction";
 import ProductForm from "../components/ProductForm";
@@ -9,7 +10,6 @@ import {
     createProduct,
     updateProduct
 } from "../services/productService";
-import { getCategories } from "../services/categoryService";
 
 const ProductFormView = () => {
 
@@ -17,20 +17,15 @@ const ProductFormView = () => {
     const navigate = useNavigate();
     const isEdit = Boolean(id);
 
-    const fetchData = useCallback(async () => {
-        const [categories, product] = await Promise.all([
-            getCategories(),
-            isEdit ? getProductById(id) : null
-        ]);
+    const { categories, loading: categoriesLoading, error: categoriesError } = useCategories();
 
-        return { categories, product };
-    }, [id, isEdit]);
-    const {
-        data: { categories, product },
-        loading,
-        error,
-        setError
-    } = useFetch(fetchData, { categories: [], product: null });
+    const fetchProduct = useCallback(
+        () => (isEdit ? getProductById(id) : Promise.resolve(null)),
+        [id, isEdit]
+    );
+    const { data: product, loading: productLoading, error, setError } = useFetch(fetchProduct, null);
+
+    const loading = categoriesLoading || productLoading;
 
     const { run } = useAsyncAction(setError);
 
@@ -51,6 +46,7 @@ const ProductFormView = () => {
     return (
         <div className="mx-auto" style={{ maxWidth: "640px" }}>
             <h1 className="h3 mb-4">{isEdit ? "Edit Product" : "Create Product"}</h1>
+            {categoriesError && <Alert variant="danger">{categoriesError}</Alert>}
             {
                 error && (
                     <Alert variant="danger" dismissible onClose={() => setError("")}>

@@ -1,19 +1,18 @@
 import { useCallback } from "react";
 import { Alert, Card, Spinner } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import useAsyncAction from "../hooks/useAsyncAction";
 import CategoryForm from "../components/CategoryForm";
-import {
-    getCategoryById,
-    createCategory,
-    updateCategory
-} from "../services/categoryService";
+import { getCategoryById } from "../services/categoryService";
+import { createCategory, updateCategory } from "../store/categoriesSlice";
 
 const CategoryFormView = () => {
 
     const { id } = useParams();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const isEdit = Boolean(id);
 
     const fetchCategory = useCallback(
@@ -26,9 +25,9 @@ const CategoryFormView = () => {
 
     const handleSave = (data) => run(async () => {
         if (isEdit) {
-            await updateCategory(id, data);
+            await dispatch(updateCategory({ id, category: data })).unwrap();
         } else {
-            await createCategory(data);
+            await dispatch(createCategory(data)).unwrap();
         }
 
         navigate("/categories");

@@ -1,14 +1,30 @@
-import { useContext } from "react";
-import AuthContext from "./AuthContext";
+import { useCallback, useMemo } from "react";
+import { bindActionCreators } from "@reduxjs/toolkit";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    login,
+    logout,
+    refreshUser,
+    register,
+    selectAuthLoading,
+    selectUser
+} from "../store/authSlice";
 
 const useAuth = () => {
-    const auth = useContext(AuthContext);
+    const dispatch = useDispatch();
+    const user = useSelector(selectUser);
+    const loading = useSelector(selectAuthLoading);
 
-    if (!auth) {
-        throw new Error("useAuth must be used inside <AuthProvider>");
-    }
+    // wraps each one in dispatch, so components can keep calling login(email, password)
+    const actions = useMemo(
+        () => bindActionCreators({ login, register, logout, refreshUser }, dispatch),
+        [dispatch]
+    );
 
-    return auth;
+    // only used to hide what the user can't do; the API checks every request itself
+    const can = useCallback((permission) => Boolean(user?.permissions?.includes(permission)), [user]);
+
+    return { user, loading, can, ...actions };
 }
 
 export default useAuth;

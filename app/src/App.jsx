@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import AppNavbar from "./components/AppNavbar";
+import Notifications from "./components/Notifications";
 import UsersView from "./views/UsersView";
 import UserFormView from "./views/UserFormView";
 import ProductsView from "./views/ProductsView";
@@ -71,6 +72,7 @@ function App() {
           <Route path="*" element={<NotFoundView />} />
         </Routes>
       </Container>
+      <Notifications />
     </>
   )
 }
